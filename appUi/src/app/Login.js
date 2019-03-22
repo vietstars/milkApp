@@ -13,12 +13,12 @@ class Login extends Component {
 	    super(props)
 	    this.state = {
 	      account:'',
-	      logged: false
+	      isLogged: false
 	    }
   	}
 
   	render() {
-  		if (this.state.logged) {
+  		if (this.state.isLogged) {
 	       return <Redirect to='/'/>;
      	}
 	    return (

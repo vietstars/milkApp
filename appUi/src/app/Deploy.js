@@ -13,18 +13,18 @@ import Logo from './img/Logo.jpg';
 class Deploy extends Component {
 
 	componentWillMount(){
-		this.setState({logged:true})
+		this.setState({isLogged:true})
   	}
 
 	constructor(props){
 	    super(props)
 	    this.state = {
-	      logged: false
+	      isLogged: false
 	    }
   	}
 
   	render() {
-  		if (!this.state.logged) {
+  		if (!this.state.isLogged) {
 	       return <Redirect to='../login'/>;
      	}
 	    return (

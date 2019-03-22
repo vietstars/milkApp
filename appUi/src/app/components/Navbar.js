@@ -58,7 +58,8 @@ class Navbar extends Component {
 	       panels: ['','/user','/factory','/store'],
 	       account:'0x0',
 	       actor: 0,
-	       isOpen:false
+	       isOpen:false,
+	       isLogged:false
 	    }
   	}
 	    
@@ -68,7 +69,7 @@ class Navbar extends Component {
 		  this.setState({ isOpen: !this.state.isOpen });
 		}
 		const _panel =  this.state.actor !== 0 && !pathname.includes(this.state.panels[this.state.actor])?<MDBNavItem><a className="nav-link waves-effect" href={this.state.panels[this.state.actor]}>Panel</a></MDBNavItem>:'';
-		const _logout =  this.state.panels[this.state.actor]!=='' && pathname.includes(this.state.panels[this.state.actor])?<MDBNavItem active><a className="nav-link waves-effect" href='../logout'>Logout</a></MDBNavItem>:'';
+		const _logout =  this.state.panels[this.state.actor]!=='' && !this.state.isLogged /*pathname.includes(this.state.panels[this.state.actor])*/?<MDBNavItem active className="color-block peach-gradient z-depth-1"><a className="nav-link white-text waves-effect" href='../logout'>Logout</a></MDBNavItem>:'';
 	    return (
 	    	<header>
 	    	{ this.state.loading
