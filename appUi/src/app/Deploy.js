@@ -13,7 +13,7 @@ import Logo from './img/Logo.jpg';
 class Deploy extends Component {
 
 	componentWillMount(){
-		this.setState({isLogged:true})
+		//this.setState({isLogged:true})
   	}
 
 	constructor(props){

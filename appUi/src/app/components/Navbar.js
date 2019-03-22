@@ -69,7 +69,7 @@ class Navbar extends Component {
 		  this.setState({ isOpen: !this.state.isOpen });
 		}
 		const _panel =  this.state.actor !== 0 && !pathname.includes(this.state.panels[this.state.actor])?<MDBNavItem><a className="nav-link waves-effect" href={this.state.panels[this.state.actor]}>Panel</a></MDBNavItem>:'';
-		const _logout =  this.state.panels[this.state.actor]!=='' && !this.state.isLogged /*pathname.includes(this.state.panels[this.state.actor])*/?<MDBNavItem active className="color-block peach-gradient z-depth-1"><a className="nav-link white-text waves-effect" href='../logout'>Logout</a></MDBNavItem>:'';
+		const _logout =  this.state.panels[this.state.actor]!=='' && this.state.isLogged /*pathname.includes(this.state.panels[this.state.actor])*/?<MDBNavItem active className="color-block peach-gradient z-depth-1"><a className="nav-link white-text waves-effect" href='../logout'>Logout</a></MDBNavItem>:'';
 	    return (
 	    	<header>
 	    	{ this.state.loading
@@ -81,7 +81,7 @@ class Navbar extends Component {
 			        <MDBNavbarToggler onClick={ toggleCollapse } />
 			        <MDBCollapse id="navbarCollapse3" isOpen={this.state.isOpen} navbar>
 			        	<MDBNavbarNav left>
-				          	<MDBNavItem active={this.state.paths.indexOf(pathname)===-1 && !pathname.includes(this.state.panels[this.state.actor])?true:false}>
+				          	<MDBNavItem active={this.state.paths.indexOf(pathname)===-1 && pathname!==this.state.panels[this.state.actor]?true:false}>
 					            <a className="nav-link waves-effect" href="/">Home 
 				                  	<span className="sr-only">(current)</span>
 				                </a>
