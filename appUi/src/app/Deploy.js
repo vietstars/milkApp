@@ -17,7 +17,11 @@ import Logo from './img/Logo.jpg';
 class Deploy extends Component {
 
 	componentWillMount(){
+<<<<<<< HEAD
 		this.loadBlockchainData()
+=======
+		//this.setState({isLogged:true})
+>>>>>>> e628e61727cfbd2e968661ce9bd4cf8dd7589fd4
   	}
 
 	constructor(props){

@@ -83,8 +83,13 @@ class Navbar extends Component {
 	    const toggleCollapse = () => {
 		  this.setState({ isOpen: !this.state.isOpen });
 		}
+<<<<<<< HEAD
 		const _panel =  this.state.actor !== 0 && !pathname.includes(this.state.panels[this.state.actor]) && this.state.isLogged?<MDBNavItem><a className="nav-link waves-effect" href={this.state.panels[this.state.actor]}>Panel</a></MDBNavItem>:(this.state.isLogged?'':<MDBNavItem active={pathname === '/register'?true:false}><a className="nav-link waves-effect" href="./register">Register</a></MDBNavItem>);
 		const _logout =  this.state.panels[this.state.actor]!=='' && this.state.isLogged /*pathname.includes(this.state.panels[this.state.actor])*/?<MDBNavItem active className="color-block peach-gradient z-depth-1"><a className="nav-link white-text waves-effect" href='#logout' onClick={this.logout.bind(this)} >Logout</a></MDBNavItem>:<MDBNavItem active={pathname === '/login'?true:false}><a className="nav-link waves-effect" href="./login">Login</a></MDBNavItem>;
+=======
+		const _panel =  this.state.actor !== 0 && !pathname.includes(this.state.panels[this.state.actor])?<MDBNavItem><a className="nav-link waves-effect" href={this.state.panels[this.state.actor]}>Panel</a></MDBNavItem>:'';
+		const _logout =  this.state.panels[this.state.actor]!=='' && this.state.isLogged /*pathname.includes(this.state.panels[this.state.actor])*/?<MDBNavItem active className="color-block peach-gradient z-depth-1"><a className="nav-link white-text waves-effect" href='../logout'>Logout</a></MDBNavItem>:'';
+>>>>>>> e628e61727cfbd2e968661ce9bd4cf8dd7589fd4
 	    return (
 	    	<header>
 	    	{ this.state.loading
@@ -96,7 +101,11 @@ class Navbar extends Component {
 			        <MDBNavbarToggler onClick={ toggleCollapse } />
 			        <MDBCollapse id="navbarCollapse3" isOpen={this.state.isOpen} navbar>
 			        	<MDBNavbarNav left>
+<<<<<<< HEAD
 				          	<MDBNavItem active={this.state.paths.indexOf(pathname)===-1 && (!pathname.includes(this.state.panels[this.state.actor]) || pathname==='/')?true:false}>
+=======
+				          	<MDBNavItem active={this.state.paths.indexOf(pathname)===-1 && pathname!==this.state.panels[this.state.actor]?true:false}>
+>>>>>>> e628e61727cfbd2e968661ce9bd4cf8dd7589fd4
 					            <a className="nav-link waves-effect" href="/">Home 
 				                  	<span className="sr-only">(current)</span>
 				                </a>
