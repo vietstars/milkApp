@@ -20,7 +20,7 @@ class DeployMenu extends Component {
 		          	<img src={this.props.logo} className="img-fluid" alt='Logo' />
 		        </a>
 		        <div className="list-group list-group-flush">
-		          	<a href="/user" className={pathname === '/user'?"list-group-item list-group-item-action waves-effect active":"list-group-item list-group-item-action waves-effect"}>
+		          	<a href="/user" className={this.state.paths.indexOf(pathname)===-1?"list-group-item list-group-item-action waves-effect active":"list-group-item list-group-item-action waves-effect"}>
 			            <i className="fas fa-chart-pie mr-3"></i>Dashboard</a>
 		          	<a href="/user/farm" className={pathname === '/user/farm'?"list-group-item list-group-item-action waves-effect active":"list-group-item list-group-item-action waves-effect"}>
 			            <i className="fas fa-user mr-3"></i>Farmer</a>

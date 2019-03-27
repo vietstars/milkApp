@@ -11,10 +11,6 @@ contract Migrations {
   modifier restricted() {
     if (msg.sender == owner) _;
   }
-
-  function checkApp() public view restricted returns(bool res) {
-    return true;
-  }
   
   function setCompleted(uint completed) public restricted {
     last_completed_migration = completed;

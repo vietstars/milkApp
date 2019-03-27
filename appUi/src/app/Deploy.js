@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter, Route, Switch/*, Redirect*/ } from 'react-router-dom';
+import Web3 from 'web3';
+// import {APP_LIST_ABI,APP_LIST_ADDRESS} from './sys/DalatMilk';
+import {GET,RMO} from './sys/AppResource';
+// import swal from 'sweetalert';
 import './css/deploy.css';
 import DeployMenu from './components/DeployMenu';
 import DeployFooter from './components/DeployFooter';
@@ -13,20 +17,34 @@ import Logo from './img/Logo.jpg';
 class Deploy extends Component {
 
 	componentWillMount(){
-		this.setState({isLogged:true})
+		this.loadBlockchainData()
   	}
 
 	constructor(props){
 	    super(props)
 	    this.state = {
-	      isLogged: false
+	      	isLogged: false,
 	    }
   	}
 
+  	async loadBlockchainData(){
+	    const web3 = new Web3(Web3.givenProvider || "http://localhost:7545")
+	    // const dalatMilk = new web3.eth.Contract(APP_LIST_ABI,APP_LIST_ADDRESS )
+	    await web3.eth.getCoinbase((eror,account)=>{
+	    	this.setState({ account })
+	    })
+	    await GET('logged/'+this.state.account).then((res)=>{
+	    	if(res.exp>Date.now()){
+	    		this.setState({isLogged:true})
+	    	}else{
+	    		RMO('logged/'+this.state.account).then((res)=>{
+					window.location.href='../login'
+				})
+	    	}
+	    })
+  	}
+
   	render() {
-  		if (!this.state.isLogged) {
-	       return <Redirect to='../login'/>;
-     	}
 	    return (
 	    	<BrowserRouter>
 			    <Route render={ (defaultProps) => <DeployMenu logo={Logo} {...defaultProps}/> } />
