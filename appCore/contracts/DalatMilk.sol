@@ -8,7 +8,6 @@ contract Ownable {
   //   address indexed newOwner
   // );
 
-<<<<<<< HEAD
   constructor() internal {
     _owner = msg.sender;
     // emit OwnershipTransferred(address(0), _owner);
@@ -49,7 +48,6 @@ contract DalatMilk is Ownable {
         string name;
         string location;
         bytes16 secret;
-        uint16 position;
         uint32 date;
     }
     
@@ -57,21 +55,21 @@ contract DalatMilk is Ownable {
 
     function updateSecret(string memory secret) public onlyOwner {
         bytes16 _secret = _generatePass(secret);
-        profile[owner()]= Profile('', '', _secret, 0, uint32(now));
+        profile[owner()]= Profile('', '', _secret, uint32(now));
     }
 
     function secretDeploy() external view returns(bool res) {
        return profile[owner()].secret != bytes16(0);
     }
     
-    function getProfile(address _account) external view returns(string memory, string memory, uint16, uint32) {
+    function getProfile(address _account) external view returns(string memory, string memory, uint32) {
         Profile memory _acc = profile[_account];
-        return(_acc.name,_acc.location,_acc.position,_acc.date);
+        return(_acc.name,_acc.location,_acc.date);
     }
     
-    function updateProfile(string memory name, string memory location, string memory secret, uint16 position) public {
+    function updateProfile(address userAdd,string memory name, string memory location, string memory secret) public {
         bytes16 _secret = _generatePass(secret);
-        profile[msg.sender]= Profile(name, location, _secret, position, uint32(now));
+        profile[userAdd]= Profile(name, location, _secret, uint32(now));
     }
     
     function checkSecret(string calldata _secret) external view onlyOwner returns(bool){
@@ -83,27 +81,3 @@ contract DalatMilk is Ownable {
     }
     
 }
-=======
-	struct Info{
-		string name;
-		string location;
-		bytes32 secret;
-		uint8 position;
-		uint16 long;
-		uint16 lat;
-	}
-
-	mapping(address=>Info) public info;
-	
-  	function createSecret(string calldata _secret) external restricted returns (bool) {
-  	    info[msg.sender] = Info('','',keccak256(abi.encodePacked(_secret)),0,0,0);
-  	    return true;
-  	}
-  	function checkSecret(string memory _secret) public view restricted returns (bool) {
-  	    if(keccak256(abi.encodePacked(_secret)) == info[msg.sender].secret)
-  	    	return true;
-  	    else
-  	        return false;
-  	}
-}
->>>>>>> e628e61727cfbd2e968661ce9bd4cf8dd7589fd4

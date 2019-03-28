@@ -13,9 +13,9 @@ class DeployStore extends Component {
 	    super(props)
 	    this.state = {
 	      	visited: 0,
-	      	farm: 0,
-	      	factory: 0,
-	      	store: 0
+	      	farm: [],
+	      	factory: [],
+	      	store: []
 	    }
   	}
 
@@ -28,14 +28,13 @@ class DeployStore extends Component {
 	    await GET('logged/').then((res)=>{
 	    	this.setState({ visited:res.length })
 	    })
-	    await GET('farm/').then((res)=>{
-	    	this.setState({ farm:res.length })
-	    })
-	    await GET('factory/').then((factory)=>{
-	    	this.setState({ factory })
-	    })
-	    await GET('store/').then((res)=>{
-	    	this.setState({ store:res.length })
+	    await GET('draff/').then((res)=>{
+	    	let farm = [],list = [],store = [];
+	    	res.map((e)=>{
+	    		e.apartment===2?farm.push(e):(e.apartment===3?list.push(e):store.push(e));
+	    		return true
+	    	})
+	    	this.setState({ farm, list, store });
 	    })
   	}
   	render() {
@@ -66,7 +65,7 @@ class DeployStore extends Component {
 						    	</div>
 						    </div>        
 				  	  	</div>
-				  		<DeployNotification visited={this.state.visited} farm={this.state.farm} factory={this.state.factory.length} store={this.state.store}/>
+				  		<DeployNotification visited={this.state.visited} farm={this.state.farm.length} factory={this.state.factory.length} store={this.state.store.length}/>
 				  	</div>
 				</div>
 		    </main>

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import {APP_LIST_ABI,APP_LIST_ADDRESS} from '../sys/DalatMilk';
 import Web3 from 'web3';
-import { GET } from '../sys/AppResource';
+import { GET,POST,RMO } from '../sys/AppResource';
+import swal from 'sweetalert';
 import DeployNotification from './DeployNotification';
 import { MDBDataTable, MDBInput, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from 'mdbreact';
 
@@ -14,36 +16,37 @@ class DeployFactory extends Component {
 	    super(props)
 	    this.state = {
 	      	visited: 0,
-	      	farm: 0,
+	      	farm: [],
 	      	factory: [],
-	      	store: 0,
+	      	store: [],
 	      	chkbox:true,
 	      	modal:false,
-	      	infomation:'Infomation is available now!',
+	      	infomation:'Infomation are available now!',
 	      	token:'0x0'
 	    }
   	}
 
 	async loadBlockchainData(){
 	    const web3 = new Web3(Web3.givenProvider || "http://localhost:7545")
-	    // const dalatMilk = new web3.eth.Contract(APP_LIST_ABI,APP_LIST_ADDRESS )
+	    const dalatMilk = new web3.eth.Contract(APP_LIST_ABI,APP_LIST_ADDRESS )
+	    this.setState({ dalatMilk })
 	    await web3.eth.getCoinbase((eror,account)=>{
 	    	this.setState({ account })
 	    })
 	    await GET('logged/').then((res)=>{
 	    	this.setState({ visited:res.length })
 	    })
-	    await GET('farm/').then((res)=>{
-	    	this.setState({ farm:res.length })
+	    await GET('draff/').then((res)=>{
+	    	let farm = [],list = [],store = [];
+	    	res.map((e)=>{
+	    		e.apartment===2?farm.push(e):(e.apartment===3?list.push(e):store.push(e));
+	    		return true
+	    	})
+	    	this.setState({ farm, list, store });
 	    })
-	    await GET('factory/').then((list)=>{
-	    	let factory = [];
-	    	list.map((v)=>{let a = {}; a.checkbox=<MDBInput label=" "  type="checkbox" value={v.id}/>;a.factory=v.name;a.token=v.id;a.act=<MDBBtn color="warning" size="sm" rounded onClick={this.getInfomation.bind(this,v.id)}>Infomation</MDBBtn>;factory.push(a); return true});
-	    	this.setState({ factory,list })
-	    })
-	    await GET('store/').then((res)=>{
-	    	this.setState({ store:res.length })
-	    })
+    	let factory=[]
+	    this.state.list.map((v)=>{let a = {}; a.checkbox=<MDBInput label=" "  type="checkbox" value={v.id}/>;a.factory=v.name;a.token=v.id;a.act=<MDBBtn color="warning" size="sm" rounded onClick={this.getInfomation.bind(this,v.id)}>Infomation</MDBBtn>;factory.push(a); return true});	
+	    this.setState({ factory })
   	}
 
   	toggle(){
@@ -66,7 +69,18 @@ class DeployFactory extends Component {
 	}
 
 	activeFactory(){
-		alert(this.state.token)
+		let actor = []
+		this.state.list.map((v) =>{ if(v.id===this.state.token)actor= v; return true;})
+		let _action = actor.apartment===2?'farm/':(actor.apartment===3?'factory/':'store/')
+		let _draff = 'draff/'+this.state.token
+		this.state.dalatMilk.methods.updateProfile(actor.id,actor.name,'actor address location',actor.secret).send({from:this.state.account}).once('receipt',(rec)=>{
+			console.log(rec);
+			POST(_action,{id:actor.id}).then(()=>{
+				RMO(_draff).then(()=>{
+					swal('Active finish','Thanks!','success').then(()=>{window.location.reload()})
+				})
+			})
+		})
 	}
 
   	render() {
@@ -79,13 +93,13 @@ class DeployFactory extends Component {
 		        width: 65
 		      },
 		      {
-		        label: 'Name',
+		        label: <label>Name</label>,
 		        field: 'factory',
 		        sort: 'asc',
 		        width: 150
 		      },
 		      {
-		        label: 'token',
+		        label: <label className="disable-icon">Token</label>,
 		        field: 'token',
 		        width: 400
 		      },
@@ -94,7 +108,7 @@ class DeployFactory extends Component {
 		        field: 'act',
 		        width: 65
 		      }],
-		    rows: this.state.factory?this.state.factory:_empty
+		    rows: this.state.factory.length>0?this.state.factory:_empty
 	  	}
 	    return (
 	      	<main className="pt-5 mx-lg-5">
@@ -117,13 +131,13 @@ class DeployFactory extends Component {
 					<div className="row wow fadeIn">
 					  	<div className="col-md-9 mb-4">
 						    <div className="card">
-						      	<div className="card-header">Factory registed</div>
+						      	<div className="card-header">Factory pending</div>
 						      	<div className="card-body">
 						    		<MDBDataTable responsive striped hover bordered small data={factory} />
 						    	</div>
 						    </div>        
 				  	  	</div>
-				  		<DeployNotification visited={this.state.visited} farm={this.state.farm} factory={this.state.factory.length} store={this.state.store}/>
+				  		<DeployNotification visited={this.state.visited} farm={this.state.farm.length} factory={this.state.factory.length} store={this.state.store.length}/>
 				  	</div>
 				</div>
 				<MDBModal isOpen={ this.state.modal } toggle={this.toggle.bind(this,2)} >

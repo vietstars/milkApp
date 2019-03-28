@@ -15,9 +15,9 @@ class DeployDashboard extends Component {
 	    super(props)
 	    this.state = {
 	      	visited: 0,
-	      	farm: 0,
-	      	factory: 0,
-	      	store: 0
+	      	farm: [],
+	      	factory: [],
+	      	store: []
 	    }
   	}
 
@@ -31,14 +31,12 @@ class DeployDashboard extends Component {
 	    	visited.map((v)=>{return v.exp = new Date((v.exp/1e3)-7200).toLocaleString()});
 	    	this.setState({ visited })
 	    })
-	    await GET('farm/').then((res)=>{
-	    	this.setState({ farm:res.length })
-	    })
-	    await GET('factory/').then((res)=>{
-	    	this.setState({ factory:res.length })
-	    })
-	    await GET('store/').then((res)=>{
-	    	this.setState({ store:res.length })
+	    await GET('draff/').then((res)=>{
+	    	let farm = [];
+	    	let factory = [];
+	    	let store = [];
+	    	res.map((e)=>{e.apartment===2?farm.push(e):(e.apartment===3?factory.push(e):store.push(e));return true})
+	    	this.setState({ farm, factory, store });
 	    })
   	}
 
@@ -85,7 +83,7 @@ class DeployDashboard extends Component {
 							    </div>
 						    </div>        
 				  		</div>				
-					  	<DeployNotification visited={this.state.visited.length} farm={this.state.farm} factory={this.state.factory} store={this.state.store}/>
+					  	<DeployNotification visited={this.state.visited.length} farm={this.state.farm.length} factory={this.state.factory.length} store={this.state.store.length}/>
 					  	<div className="col-md-9 mb-4">
 						    <div className="card">
 						      	<div className="card-header">Multiple Apartment</div>

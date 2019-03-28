@@ -38,7 +38,7 @@ class Register extends Component {
   		let name=this.refs.actor.state.innerValue;
   		let apartment=this.state.apartmentId;
   		let secret=this.refs.secret.state.innerValue;
-  		let action = apartment === 2?'farm/':(apartment === 3?'factory':'store');
+  		let action = 'draff/';
   		POST(action,{name,id,secret,apartment}).then(()=>{
   			swal('Register finish!','Thank for registed','success').then(()=>{window.location.reload()});  			
   		})

@@ -1,4 +1,4 @@
-export const APP_LIST_ADDRESS ='0x49f6BF5f691685934026eA5777AaBF671Cb1170B';
+export const APP_LIST_ADDRESS ='0xF3b46Dd36Aeb8091358ad7A147b789075D306AA4';
 export const APP_LIST_ABI = [
     {
       "constant": true,
@@ -14,46 +14,6 @@ export const APP_LIST_ABI = [
       "stateMutability": "view",
       "type": "function",
       "signature": "0x8da5cb5b"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "name": "info",
-      "outputs": [
-        {
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "name": "location",
-          "type": "string"
-        },
-        {
-          "name": "secret",
-          "type": "bytes32"
-        },
-        {
-          "name": "position",
-          "type": "uint8"
-        },
-        {
-          "name": "long",
-          "type": "uint16"
-        },
-        {
-          "name": "lat",
-          "type": "uint16"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function",
-      "signature": "0x0aae7a6b"
     },
     {
       "constant": true,
@@ -120,10 +80,6 @@ export const APP_LIST_ABI = [
         },
         {
           "name": "",
-          "type": "uint16"
-        },
-        {
-          "name": "",
           "type": "uint32"
         }
       ],
@@ -136,6 +92,10 @@ export const APP_LIST_ABI = [
       "constant": false,
       "inputs": [
         {
+          "name": "userAdd",
+          "type": "address"
+        },
+        {
           "name": "name",
           "type": "string"
         },
@@ -146,10 +106,6 @@ export const APP_LIST_ABI = [
         {
           "name": "secret",
           "type": "string"
-        },
-        {
-          "name": "position",
-          "type": "uint16"
         }
       ],
       "name": "updateProfile",
@@ -157,31 +113,7 @@ export const APP_LIST_ABI = [
       "payable": false,
       "stateMutability": "nonpayable",
       "type": "function",
-<<<<<<< HEAD
-      "signature": "0x47d4d8d4"
-=======
-      "signature": "0xfdacd576"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "_secret",
-          "type": "string"
-        }
-      ],
-      "name": "createSecret",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function",
-      "signature": "0x1969f290"
->>>>>>> e628e61727cfbd2e968661ce9bd4cf8dd7589fd4
+      "signature": "0x9d5a3941"
     },
     {
       "constant": true,
