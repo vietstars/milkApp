@@ -32,16 +32,15 @@ class Register extends Component {
   	addApartment(e){
   		e.preventDefault();
   		let id = this.state.id;
-  		if(!id){
-  			swal("Please connect to Metamask.","Our blockchain tech using that extension!",'error').then(()=>{window.location.reload()}); 
-  		}
   		let name=this.refs.actor.state.innerValue;
   		let apartment=this.state.apartmentId;
   		let secret=this.refs.secret.state.innerValue;
   		let action = 'draff/';
   		POST(action,{name,id,secret,apartment}).then(()=>{
   			swal('Register finish!','Thank for registed','success').then(()=>{window.location.reload()});  			
-  		})
+  		}).catch(()=>{
+  			swal('Register fails!','Your registed pending, we will feedback to you asap!','error').then(()=>{window.location.reload()});
+  		});
   	}
 
   	render() {

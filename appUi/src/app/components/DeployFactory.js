@@ -73,8 +73,8 @@ class DeployFactory extends Component {
 		this.state.list.map((v) =>{ if(v.id===this.state.token)actor= v; return true;})
 		let _action = actor.apartment===2?'farm/':(actor.apartment===3?'factory/':'store/')
 		let _draff = 'draff/'+this.state.token
+		console.log(actor.id);
 		this.state.dalatMilk.methods.updateProfile(actor.id,actor.name,'actor address location',actor.secret).send({from:this.state.account}).once('receipt',(rec)=>{
-			console.log(rec);
 			POST(_action,{id:actor.id}).then(()=>{
 				RMO(_draff).then(()=>{
 					swal('Active finish','Thanks!','success').then(()=>{window.location.reload()})

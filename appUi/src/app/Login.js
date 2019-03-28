@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {MDBContainer, MDBInput} from 'mdbreact';
 import Web3 from 'web3';
 import {APP_LIST_ABI,APP_LIST_ADDRESS} from './sys/DalatMilk';
-import {HOURSEXP,GET,POST} from './sys/AppResource';
+import {HOURSEXP,POST} from './sys/AppResource';
 import swal from 'sweetalert';
 import './css/login.css';
 
@@ -27,12 +27,6 @@ class Login extends Component {
 	    this.setState({dalatMilk});
 	    await web3.eth.getCoinbase((eror,account)=>{
 	    	this.setState({ account })
-	    })
-	    await GET('logged/'+this.state.account).then((res)=>{
-	    	if(res.exp>Date.now()){
-	    		this.setState({isLogged:true})
-	    		window.location.href = "/"
-	    	}
 	    })
 	    await dalatMilk.methods.secretDeploy().call({from:this.state.account}).then((isSecret)=>{
 	    		this.setState({ isSecret })

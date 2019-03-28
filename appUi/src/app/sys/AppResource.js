@@ -9,8 +9,7 @@ export const POST = (_url,_body)=>{
       headers: HEADERS,
       body: JSON.stringify(_body)
   })
-  .then((res) => {return res.json();} )
-  .catch(console.log);
+  .then((res) => {return res.json();} );
 }
 
 export const GET = (_url)=>{
@@ -18,8 +17,7 @@ export const GET = (_url)=>{
       method: 'GET',
       headers: HEADERS
   })
-  .then((res) => {return res.json();} )
-  .catch(console.log);
+  .then((res) => {return res.json();} );
 }
 
 export const RMO = (_url)=>{
@@ -27,6 +25,23 @@ export const RMO = (_url)=>{
       method: 'DELETE',
       headers: HEADERS
   })
-  .then((res) => {return res.json();} )
-  .catch(console.log);
+  .then((res) => {return res.json();} );
+}
+
+export const PUT = (_url,_body)=>{
+  return fetch(URL+_url, {
+      method: 'PUT',
+      headers: HEADERS,
+      body: JSON.stringify(_body)
+  })
+  .then((res) => {return res.json();} );
+}
+
+export const PATCH = (_url,_body)=>{
+  return fetch(URL+_url, {
+      method: 'PATCH',
+      headers: HEADERS,
+      body: JSON.stringify(_body)
+  })
+  .then((res) => {return res.json();} );
 }
