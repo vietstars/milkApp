@@ -10,20 +10,23 @@ import Deploy from './app/Deploy';
 import Home from './app/Home';
 import Register from './app/Register';
 import Navbar from './app/components/Navbar';
+import { CookiesProvider } from 'react-cookie';
 
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-	<BrowserRouter>
-		<Route component={Navbar}/>
-        <Switch>
-          <Route path={"/"} component={ Home } exact/>
-          <Route path={"/user"} component={ Deploy }/>
-          <Route path={"/login"} component={ Login }/>
-          <Route path={"/register"} component={ Register }/>
-          <Route component={ Home }/>
-        </Switch>
+  <CookiesProvider>
+	  <BrowserRouter>
+	    <Route component={Navbar}/>
+      <Switch>
+        <Route path={"/"} component={ Home } exact/>
+        <Route path={"/user"} component={ Deploy }/>
+        <Route path={"/login"} component={ Login }/>
+        <Route path={"/register"} component={ Register }/>
+        <Route component={ Home }/>
+      </Switch>
   	</BrowserRouter>
+  </CookiesProvider>
 	, document.getElementById('root')
 );
 

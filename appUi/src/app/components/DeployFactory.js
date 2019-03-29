@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {APP_LIST_ABI,APP_LIST_ADDRESS} from '../sys/DalatMilk';
 import Web3 from 'web3';
-import { GET,POST,RMO } from '../sys/AppResource';
+import { LOGGED,DRAFF,FACTORY,GET,POST,DEL } from '../sys/AppResource';
 import swal from 'sweetalert';
 import DeployNotification from './DeployNotification';
 import { MDBDataTable, MDBInput, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from 'mdbreact';
@@ -33,10 +33,10 @@ class DeployFactory extends Component {
 	    await web3.eth.getCoinbase((eror,account)=>{
 	    	this.setState({ account })
 	    })
-	    await GET('logged/').then((res)=>{
+	    await GET(LOGGED).then((res)=>{
 	    	this.setState({ visited:res.length })
 	    })
-	    await GET('draff/').then((res)=>{
+	    await GET(DRAFF).then((res)=>{
 	    	let farm = [],list = [],store = [];
 	    	res.map((e)=>{
 	    		e.apartment===2?farm.push(e):(e.apartment===3?list.push(e):store.push(e));
@@ -71,12 +71,10 @@ class DeployFactory extends Component {
 	activeFactory(){
 		let actor = []
 		this.state.list.map((v) =>{ if(v.id===this.state.token)actor= v; return true;})
-		let _action = actor.apartment===2?'farm/':(actor.apartment===3?'factory/':'store/')
-		let _draff = 'draff/'+this.state.token
-		console.log(actor.id);
-		this.state.dalatMilk.methods.updateProfile(actor.id,actor.name,'actor address location',actor.secret).send({from:this.state.account}).once('receipt',(rec)=>{
-			POST(_action,{id:actor.id}).then(()=>{
-				RMO(_draff).then(()=>{
+		let _draff = DRAFF+this.state.token
+		this.state.dalatMilk.methods.updateProfile(actor.id,actor.name,'actor address location',3,actor.secret).send({from:this.state.account}).once('receipt',(rec)=>{
+			POST(FACTORY,{id:actor.id}).then(()=>{
+				DEL(_draff).then(()=>{
 					swal('Active finish','Thanks!','success').then(()=>{window.location.reload()})
 				})
 			})

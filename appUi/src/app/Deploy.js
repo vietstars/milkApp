@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch/*, Redirect*/ } from 'react-router-dom';
 import Web3 from 'web3';
 // import {APP_LIST_ABI,APP_LIST_ADDRESS} from './sys/DalatMilk';
-import {GET,RMO} from './sys/AppResource';
+import {LOGGED,GET,DEL} from './sys/AppResource';
 // import swal from 'sweetalert';
 import './css/deploy.css';
 import DeployMenu from './components/DeployMenu';
@@ -33,11 +33,11 @@ class Deploy extends Component {
 	    await web3.eth.getCoinbase((eror,account)=>{
 	    	this.setState({ account })
 	    })
-	    await GET('logged/'+this.state.account).then((res)=>{
+	    await GET(LOGGED+this.state.account).then((res)=>{
 	    	if(res.exp>Date.now()){
 	    		this.setState({isLogged:true})
 	    	}else{
-	    		RMO('logged/'+this.state.account).then((res)=>{
+	    		DEL(LOGGED+this.state.account).then((res)=>{
 					window.location.href='../login'
 				})
 	    	}

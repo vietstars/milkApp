@@ -8,6 +8,7 @@
     "json-server": "^0.14.2",
     "mdbreact": "^4.11.1",
     "react": "^16.8.4",
+    "react-cookie": "^3.1.1",
     "react-dom": "^16.8.4",
     "react-render-html": "^0.6.0",
     "react-router-dom": "^5.0.0",
@@ -30,5 +31,5 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "homepage" : "http://vietstars.github.io/milkApp"
+  "homepage": "http://vietstars.github.io/milkApp"
 }

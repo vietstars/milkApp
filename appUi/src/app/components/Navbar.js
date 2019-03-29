@@ -1,29 +1,30 @@
 import React, { Component } from 'react';
 import {withRouter} from 'react-router-dom';
+import { instanceOf } from 'prop-types';
+import { withCookies, Cookies } from 'react-cookie';
 import {MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavbarToggler, MDBCollapse, MDBIcon} from "mdbreact";
 import swal from 'sweetalert';
 import Web3 from 'web3';
 import {APP_LIST_ABI,APP_LIST_ADDRESS} from '../sys/DalatMilk';
-import {GET,RMO} from '../sys/AppResource';
+import {LOGGED,GET,PUT,DEL,HOUREXP} from '../sys/AppResource';
 import Loading from './Loading';
 
-withRouter(props => <Navbar {...props}/>);
+withRouter(props => <Navbar {...props} cookies={instanceOf(Cookies).isRequired}/>);
 
 class Navbar extends Component {
 
-	// componentDidMount(){
-			
- //  	}
-
 	componentWillMount(){
 		const {pathname} = this.props.location;
+		if(this.state.isLogged){
+			if(pathname === '/login'||pathname === '/register')window.location.href = '/'
+		}
 		var _pass=0;
   		if(window.ethereum===undefined||!window.ethereum.isMetaMask)
   			swal("Please connect to Metamask.","Our blockchain tech using that extension!",'error').then(()=>{
   				if(!this.state.paths.indexOf(pathname)===-1 || pathname==='/login' || pathname ==='/register'){
   					window.location.href='/'
   				}}
-  				)
+			)
   		else
   			window.ethereum.on('accountsChanged', ()=>{_pass>0?window.location.reload():_pass++;})
 		this.loadBlockchainData()
@@ -32,7 +33,8 @@ class Navbar extends Component {
   	async loadBlockchainData(){
     	let self = this;
   		const {pathname} = this.props.location;
-	    const web3 = new Web3(Web3.givenProvider || "http://localhost:7545")
+  		const {cookies} = this.props
+  		const web3 = new Web3(Web3.givenProvider || "http://localhost:7545")
 	    // const network = await web3.eth.net.getNetworkType()
 	    // const network = await web3.eth.net.getId()
 	    // const network = await web3.currentProvider
@@ -41,90 +43,93 @@ class Navbar extends Component {
 	    await web3.eth.getCoinbase((eror,account)=>{
 	    	this.setState({ account })
 	    })
+	    /**********server side*************/
+	    await GET(LOGGED).then((res)=>{
+	    	if(res.exp<(Date.now()/1e3))
+	    		DEL(LOGGED+this.state.account)
+	    })
+	    /**********************************/
 	    if(!this.state.account){
-	    	swal("Please connect to Metamask","Our blockchain tech using that extension!",'error').then(()=>{
 	    		if(!this.state.paths.indexOf(pathname)===-1 || pathname==='/login' || pathname ==='/register'){
   					window.location.href='/'
+  				}else{
+	    			swal("Please connect to Metamask","Our blockchain tech using that extension!",'error').then(()=>{
+	    				setTimeout(function(){
+							self.setState({ loading: false})
+						}, 2000)
+	    			})
   				}
-	    		setTimeout(function(){
-					self.setState({ loading: false})
-				}, 2000)
-	    	})
 	    }else{
-	    	if(!this.state.isLogged){
-		    	await GET('logged/'+this.state.account).then((res)=>{
-			    	if(res.exp>(Date.now()/1e3)){
-				    	this.setState({isLogged: true})
-			    	}
-		    	})
-		    	if(pathname === '/login'||pathname === '/register'){
-		    		await dalatMilk.methods.isOwner().call({from:this.state.account}).then((res)=>{
-				    	if(res){
-				    		this.setState({ actor: 1, loading:false })		    		
-				    	}else{
-				    		setTimeout(function(){
-								self.setState({ loading: false})
-							}, 2000)	
-				    	}
-				    }).catch(()=>{
-				    	swal("Please connect to Metamask.","Our blockchain tech using that extension!",'error').then(()=>{
-				    		window.location.href = '/'
-				    	})
-				    });
-		    	}else{
-		    		setTimeout(function(){
-						self.setState({ loading: false})
-					}, 2000)	
-		    	}
-	    	}
-	    	if(this.state.isLogged){
+    		await dalatMilk.methods.checkUser().call({from:this.state.account}).then((actor)=>{
+    			cookies.set('actor', actor, { maxAge:HOUREXP,path: '/' });
+	    		this.setState({ actor, loading:false })	
+		    }).catch(()=>{
 	    		if(pathname === '/login'||pathname === '/register'){
 	    			window.location.href = '/'
-	    		}
-	    		await dalatMilk.methods.isOwner().call({from:this.state.account}).then((res)=>{
-			    	if(res){
-			    		this.setState({ actor: 1, loading:false })		    		
-			    	}else{
-			    		setTimeout(function(){
+	    		}else{
+	      			swal("Please connect to Metamask.","Our blockchain tech using that extension!",'error').then(()=>{
+		    			setTimeout(function(){
 							self.setState({ loading: false})
-						}, 2000)	
-			    	}
-			    }).catch(()=>{
-			    	swal("Please connect to Metamask.","Our blockchain tech using that extension!",'error').then(()=>{
-			    		window.location.href = '/'
-			    	})
-			    });
-	    	}
+						},2000)
+		  			})
+	    		}
+		    });
+		    if(this.state.actor>0){
+		    	if(pathname === '/register'){
+		    		window.location.href = '/'
+		    	}else{		
+		    		if(this.state.isLogged){
+		    			await GET(LOGGED+this.state.account).then((res)=>{
+		    				if(res.exp!== undefined){
+						    	if(res.exp>(Date.now()/1e3)){
+							    	this.setState({loading: false})
+							    	cookies.set('isLogged', true, { maxAge:3600,path: '/' });
+							    	PUT(LOGGED+this.state.account, {exp:HOUREXP})
+						    	}else{
+						    		DEL(LOGGED+this.state.account)
+								    setTimeout(function(){
+										self.setState({ loading: false})
+									},2000)
+						    	}
+		    				}
+				    	})
+		    		}    		
+		    	}
+		    }		    
 	    }
   	}
 
 	constructor(props){
 	    super(props)
+	    const { cookies } = props;
 	    this.state = {
 	       loading: true,
 	       paths: ['/about','/customer','/guide','/login','/register'],
 	       panels: ['','/user','/factory','/store'],
 	       account:false,
 	       isOpen:false,
-	       isLogged:false,
-	       actor:0
+	       isLogged:cookies.get('isLogged')||false,
+	       actor:cookies.get('actor')||0
 	    }
   	}
   	logout(){
-  		RMO('logged/'+this.state.account).then((res)=>{
-    		this.setState({isLogged:false})
-    		window.location.reload()
-	    })
-  		swal('Logout finish!','Thanks.','success');
+	    const { cookies } = this.props;
+		cookies.set('actor', false, { maxAge:-3600,path: '/' });
+		cookies.set('isLogged', false, { maxAge:-3600,path: '/' });
+  		swal('Logout finish!','Thanks.','success').then(()=>{
+	  		DEL(LOGGED+this.state.account).then((res)=>{
+	    		this.setState({isLogged:false})
+	    		window.location.reload()
+		    })
+  		})
   	}
   	render() {
 	    const {pathname} = this.props.location;
 	    const toggleCollapse = () => {
 		  this.setState({ isOpen: !this.state.isOpen });
 		}
-		//actor:0 && account in node data for register (!)
-		const _panel = this.state.isLogged?<MDBNavItem><a className="nav-link waves-effect" href={this.state.panels[this.state.actor]}>Panel</a></MDBNavItem>:(this.state.actor===0?<MDBNavItem active={pathname === '/register'?true:false}><a className="nav-link waves-effect" href="./register">Register</a></MDBNavItem>:'');
-		const _logout = this.state.actor>0 && this.state.isLogged?<MDBNavItem active className="color-block peach-gradient z-depth-1"><a className="nav-link white-text waves-effect" href='#logout' onClick={this.logout.bind(this)} >Logout</a></MDBNavItem>:<MDBNavItem active={pathname === '/login'?true:false}><a className="nav-link waves-effect" href="./login">Login</a></MDBNavItem>;
+		const _panel = this.state.isLogged && !pathname.includes(this.state.panels[this.state.actor])?<MDBNavItem><a className="nav-link waves-effect" href={this.state.panels[this.state.actor]}>Panel</a></MDBNavItem>:(parseInt(this.state.actor)===0?<MDBNavItem active={pathname === '/register'?true:false}><a className="nav-link waves-effect" href="./register">Register</a></MDBNavItem>:'');
+		const _logout = this.state.isLogged?<MDBNavItem active className="color-block peach-gradient z-depth-1"><a className="nav-link white-text waves-effect" href='#logout' onClick={this.logout.bind(this)} >Logout</a></MDBNavItem>:(this.state.actor>0?<MDBNavItem active={pathname === '/login'?true:false}><a className="nav-link waves-effect" href="./login">Login</a></MDBNavItem>:'');
 	    return (
 	    	<header>
 	    	{ this.state.loading
@@ -178,4 +183,4 @@ class Navbar extends Component {
   	}
 }
 
-export default Navbar;
+export default withCookies(Navbar);

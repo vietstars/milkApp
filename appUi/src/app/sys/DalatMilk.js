@@ -1,4 +1,4 @@
-export const APP_LIST_ADDRESS ='0x033E5D05cE3fB305a53462109f987F0a856C8177';
+export const APP_LIST_ADDRESS ='0x3AB6589042342b2546f1EaD8affbcE0B89B8f302';
 export const APP_LIST_ABI = [
     {
       "constant": true,
@@ -29,6 +29,21 @@ export const APP_LIST_ABI = [
       "stateMutability": "view",
       "type": "function",
       "signature": "0x8f32d59b"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "checkUser",
+      "outputs": [
+        {
+          "name": "actor",
+          "type": "uint8"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xc1562547"
     },
     {
       "constant": false,
@@ -80,6 +95,10 @@ export const APP_LIST_ABI = [
         },
         {
           "name": "",
+          "type": "uint8"
+        },
+        {
+          "name": "",
           "type": "uint32"
         }
       ],
@@ -87,6 +106,26 @@ export const APP_LIST_ABI = [
       "stateMutability": "view",
       "type": "function",
       "signature": "0x0f53a470"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_key",
+          "type": "string"
+        }
+      ],
+      "name": "userLogin",
+      "outputs": [
+        {
+          "name": "res",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xb01f91bb"
     },
     {
       "constant": false,
@@ -104,6 +143,10 @@ export const APP_LIST_ABI = [
           "type": "string"
         },
         {
+          "name": "position",
+          "type": "uint8"
+        },
+        {
           "name": "secret",
           "type": "string"
         }
@@ -113,7 +156,7 @@ export const APP_LIST_ABI = [
       "payable": false,
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0x9d5a3941"
+      "signature": "0xc0de420c"
     },
     {
       "constant": true,

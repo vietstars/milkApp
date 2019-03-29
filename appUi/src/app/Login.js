@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 import {MDBContainer, MDBInput} from 'mdbreact';
+import { instanceOf } from 'prop-types';
+import { withCookies, Cookies } from 'react-cookie';
 import Web3 from 'web3';
 import {APP_LIST_ABI,APP_LIST_ADDRESS} from './sys/DalatMilk';
-import {HOURSEXP,POST} from './sys/AppResource';
+import {LOGGED,POST,HOUREXP} from './sys/AppResource';
 import swal from 'sweetalert';
 import './css/login.css';
 
 class Login extends Component {
+
+	static propTypes = {
+	    cookies: instanceOf(Cookies).isRequired
+  	};
 
 	componentWillMount(){
 		this.loadBlockchainData();
@@ -14,10 +20,11 @@ class Login extends Component {
 
 	constructor(props){
 	    super(props)
+	    const { cookies } = props;
 	    this.state = {
-	      isLogged: false,
 	      isSecret:false,
-	      counter:1
+	      counter:1,
+	      actor:cookies.get('actor')||0
 	    }
   	}
 
@@ -34,37 +41,45 @@ class Login extends Component {
   	}
 
   	addSecret(){
+  		const {cookies} = this.props;
   		let _key = this.refs.secret.state.innerValue;
-  		if(!this.state.isSecret){
-	  		this.state.dalatMilk.methods.updateSecret(_key).send({from:this.state.account}).once('receipt', (rec)=>{
-		      	this.setState({isSecret:true})
-				POST("logged/", {id: this.state.account,exp: HOURSEXP})
-			        .then(()=>{
-			        	swal('Sign In finish','Thanks!','success').then(()=>{
-			        		window.location.reload();
-			        	});
-			        });
-    			})
-  		}else{
-  			this.state.dalatMilk.methods.checkSecret(_key).call({from:this.state.account}).then((isLogged)=>{
-  				this.setState({isLogged});
-  				if(isLogged){
-	  				POST("logged/", {id: this.state.account,exp: HOURSEXP})
-			        .then(()=>{
-			        	swal('Sign In finish','Thanks!','success').then(()=>{
-			        		window.location.reload();
-			        	});
-			        });
-  				}else{
-  					swal('Some thing wrong!',this.state.counter<=3?'Counter checked: '+ this.state.counter:'Please enter your correct secret key','error').then(()=>{
-			        	if(this.state.counter > 3){
-			        		window.location.href = '/'
-			        	}else{
-			        		this.setState({ counter:this.state.counter+1})
-			        	}
-			        });
-  				}
-		    })
+  		if(parseInt(this.state.actor) === 1){
+	  		if(!this.state.isSecret){
+		  		this.state.dalatMilk.methods.updateSecret(_key).send({from:this.state.account}).once('receipt', (rec)=>{
+			      	this.setState({isSecret:true})
+					POST(LOGGED, {id: this.state.account,exp: HOUREXP})
+				        .then(()=>{
+				        	cookies.set('isLogged', true, { maxAge:3600, path: '/' });
+				        	swal('Sign In finish','Thanks!','success').then(()=>{
+				        		window.location.reload();
+				        	});
+				        });
+	    			})
+	  		}else{
+	  			this.state.dalatMilk.methods.checkSecret(_key).call({from:this.state.account}).then((isLogged)=>{
+	  				this.setState({isLogged});
+	  				if(isLogged){
+		  				POST(LOGGED, {id: this.state.account,exp: HOUREXP})
+				        .then(()=>{
+				        	cookies.set('isLogged', true, { maxAge:3600,path: '/' });
+				        	swal('Sign In finish','Thanks!','success').then(()=>{
+				        		window.location.reload();
+				        	});
+				        });
+	  				}else{
+	  					swal('Some thing wrong!',this.state.counter<=3?'Counter checked: '+ this.state.counter:'Please enter your correct secret key','error').then(()=>{
+				        	if(this.state.counter > 3){
+				        		window.location.href = '/'
+				        	}else{
+				        		this.setState({ counter:this.state.counter+1})
+				        	}
+				        });
+	  				}
+			    })
+	  		}
+  		} else {
+  			
+
   		}
   	}
 
@@ -108,4 +123,4 @@ class Login extends Component {
   	}
 }
 
-export default Login;
+export default withCookies(Login);

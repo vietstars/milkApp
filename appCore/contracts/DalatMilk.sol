@@ -48,28 +48,42 @@ contract DalatMilk is Ownable {
         string name;
         string location;
         bytes16 secret;
+        uint8 position;
         uint32 date;
     }
     
     mapping(address=>Profile) profile;
 
+    function checkUser() external view returns(uint8 actor) {
+        if(msg.sender == owner()){
+          return 1;
+        }else{
+          return profile[msg.sender].position;
+        }
+    }
+
     function updateSecret(string memory secret) public onlyOwner {
         bytes16 _secret = _generatePass(secret);
-        profile[owner()]= Profile('', '', _secret, uint32(now));
+        profile[owner()]= Profile('', '', _secret, 1, uint32(now));
     }
 
     function secretDeploy() external view returns(bool res) {
        return profile[owner()].secret != bytes16(0);
     }
     
-    function getProfile(address _account) external view returns(string memory, string memory, uint32) {
+    function getProfile(address _account) external view returns(string memory, string memory, uint8, uint32) {
         Profile memory _acc = profile[_account];
-        return(_acc.name,_acc.location,_acc.date);
+        return(_acc.name,_acc.location,_acc.position,_acc.date);
+    }
+
+    function userLogin(string calldata _key) external view returns(bool res) {
+        return _generatePass(_key) == profile[msg.sender].secret;
     }
     
-    function updateProfile(address userAdd,string memory name, string memory location, string memory secret) public {
+    
+    function updateProfile(address userAdd,string memory name, string memory location, uint8 position, string memory secret) public {
         bytes16 _secret = _generatePass(secret);
-        profile[userAdd]= Profile(name, location, _secret, uint32(now));
+        profile[userAdd]= Profile(name, location, _secret, position, uint32(now));
     }
     
     function checkSecret(string calldata _secret) external view onlyOwner returns(bool){

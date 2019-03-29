@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {MDBContainer, MDBInput, MDBIcon, MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem} from 'mdbreact';
-import {POST} from './sys/AppResource';
+import {DRAFF,POST} from './sys/AppResource';
 import swal from 'sweetalert';
 import Web3 from 'web3';
 
@@ -35,8 +35,7 @@ class Register extends Component {
   		let name=this.refs.actor.state.innerValue;
   		let apartment=this.state.apartmentId;
   		let secret=this.refs.secret.state.innerValue;
-  		let action = 'draff/';
-  		POST(action,{name,id,secret,apartment}).then(()=>{
+  		POST(DRAFF,{name,id,secret,apartment}).then(()=>{
   			swal('Register finish!','Thank for registed','success').then(()=>{window.location.reload()});  			
   		}).catch(()=>{
   			swal('Register fails!','Your registed pending, we will feedback to you asap!','error').then(()=>{window.location.reload()});

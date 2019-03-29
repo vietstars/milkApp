@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Deploybg from '../img/Deploy-processing.jpg';
 import Web3 from 'web3';
-import { GET } from '../sys/AppResource';
+import { LOGGED,DRAFF,GET } from '../sys/AppResource';
 import DeployNotification from './DeployNotification';
 import { MDBDataTable } from 'mdbreact';
 
@@ -27,11 +27,11 @@ class DeployDashboard extends Component {
 	    await web3.eth.getCoinbase((eror,account)=>{
 	    	this.setState({ account })
 	    })
-	    await GET('logged/').then((visited)=>{
+	    await GET(LOGGED).then((visited)=>{
 	    	visited.map((v)=>{return v.exp = new Date((v.exp/1e3)-7200).toLocaleString()});
 	    	this.setState({ visited })
 	    })
-	    await GET('draff/').then((res)=>{
+	    await GET(DRAFF).then((res)=>{
 	    	let farm = [];
 	    	let factory = [];
 	    	let store = [];
@@ -84,16 +84,6 @@ class DeployDashboard extends Component {
 						    </div>        
 				  		</div>				
 					  	<DeployNotification visited={this.state.visited.length} farm={this.state.farm.length} factory={this.state.factory.length} store={this.state.store.length}/>
-					  	<div className="col-md-9 mb-4">
-						    <div className="card">
-						      	<div className="card-header">Multiple Apartment</div>
-						      	<div className="card-body customer-style">
-							      <img src={Deploybg} className="img-fluid" alt="" />
-							      <h1 className="text-center">Coming Soon</h1>
-							      <MDBDataTable striped hover data={visited} />
-							    </div>
-						    </div>        
-				  		</div>	
 					</div>
 				</div>
 		    </main>
