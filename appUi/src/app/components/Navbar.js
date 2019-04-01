@@ -105,7 +105,7 @@ class Navbar extends Component {
 	    this.state = {
 	       loading: true,
 	       paths: ['/about','/customer','/guide','/login','/register'],
-	       panels: ['','/user','/factory','/store'],
+	       panels: ['','/user','/farm','/factory','/store'],
 	       account:false,
 	       isOpen:false,
 	       isLogged:cookies.get('isLogged')||false,

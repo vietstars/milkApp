@@ -31,9 +31,13 @@ class Register extends Component {
 
   	addApartment(e){
   		e.preventDefault();
+  		let apartment=this.state.apartmentId;
+  		if(apartment === 0){
+  			swal('Missing key input!','Please choose apartment','error').then();
+  			return;
+  		} 
   		let id = this.state.id;
   		let name=this.refs.actor.state.innerValue;
-  		let apartment=this.state.apartmentId;
   		let secret=this.refs.secret.state.innerValue;
   		POST(DRAFF,{name,id,secret,apartment}).then(()=>{
   			swal('Register finish!','Thank for registed','success').then(()=>{window.location.reload()});  			

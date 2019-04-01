@@ -20,7 +20,12 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "logged": "json-server -w logged-register.js -p 3001",
+    "farm": "json-server -w farm.js -p 4001",
+    "factory": "json-server -w factory.js -p 5001",
+    "store": "json-server -w store.js -p 6001",
+    "invoice": "json-server -w invoice.js -p 7001"
   },
   "eslintConfig": {
     "extends": "react-app"

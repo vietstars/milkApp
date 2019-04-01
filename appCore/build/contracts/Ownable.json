@@ -40,19 +40,19 @@
   "deployedBytecode": "0x",
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "pragma solidity >=0.4.21 <0.6.0;\r\n\r\ncontract Ownable {\r\n  address private _owner;\r\n\r\n  // event OwnershipTransferred(\r\n  //   address indexed previousOwner,\r\n  //   address indexed newOwner\r\n  // );\r\n\r\n  constructor() internal {\r\n    _owner = msg.sender;\r\n    // emit OwnershipTransferred(address(0), _owner);\r\n  }\r\n\r\n  function owner() public view returns(address) {\r\n    return _owner;\r\n  }\r\n\r\n  modifier onlyOwner() {\r\n    require(isOwner());\r\n    _;\r\n  }\r\n\r\n  function isOwner() public view returns(bool) {\r\n    return msg.sender == _owner;\r\n  }\r\n\r\n  // function renounceOwnership() public onlyOwner {\r\n  //   emit OwnershipTransferred(_owner, address(0));\r\n  //   _owner = address(0);\r\n  // }\r\n\r\n  // function transferOwnership(address newOwner) public onlyOwner {\r\n  //   _transferOwnership(newOwner);\r\n  // }\r\n\r\n  // function _transferOwnership(address newOwner) internal {\r\n  //   require(newOwner != address(0));\r\n  //   emit OwnershipTransferred(_owner, newOwner);\r\n  //   _owner = newOwner;\r\n  // }\r\n}\r\n\r\ncontract DalatMilk is Ownable {\r\n\r\n    struct Profile{\r\n        string name;\r\n        string location;\r\n        bytes16 secret;\r\n        uint8 position;\r\n        uint32 date;\r\n    }\r\n    \r\n    mapping(address=>Profile) profile;\r\n\r\n    function checkUser() external view returns(uint8 actor) {\r\n        if(msg.sender == owner()){\r\n          return 1;\r\n        }else{\r\n          return profile[msg.sender].position;\r\n        }\r\n    }\r\n\r\n    function updateSecret(string memory secret) public onlyOwner {\r\n        bytes16 _secret = _generatePass(secret);\r\n        profile[owner()]= Profile('', '', _secret, 1, uint32(now));\r\n    }\r\n\r\n    function secretDeploy() external view returns(bool res) {\r\n       return profile[owner()].secret != bytes16(0);\r\n    }\r\n    \r\n    function getProfile(address _account) external view returns(string memory, string memory, uint8, uint32) {\r\n        Profile memory _acc = profile[_account];\r\n        return(_acc.name,_acc.location,_acc.position,_acc.date);\r\n    }\r\n\r\n    function userLogin(string calldata _key) external view returns(bool res) {\r\n        return _generatePass(_key) == profile[msg.sender].secret;\r\n    }\r\n    \r\n    \r\n    function updateProfile(address userAdd,string memory name, string memory location, uint8 position, string memory secret) public {\r\n        bytes16 _secret = _generatePass(secret);\r\n        profile[userAdd]= Profile(name, location, _secret, position, uint32(now));\r\n    }\r\n    \r\n    function checkSecret(string calldata _secret) external view onlyOwner returns(bool){\r\n        return _generatePass(_secret)==profile[owner()].secret;\r\n    }\r\n    \r\n    function _generatePass(string memory secret) private pure returns(bytes16) {\r\n        return bytes16(keccak256(abi.encodePacked(secret)));\r\n    }\r\n    \r\n}\r\n",
+  "source": "pragma solidity >=0.4.21 <0.6.0;\r\n\r\ncontract Ownable {\r\n  address private _owner;\r\n\r\n  // event OwnershipTransferred(\r\n  //   address indexed previousOwner,\r\n  //   address indexed newOwner\r\n  // );\r\n\r\n  constructor() internal {\r\n    _owner = msg.sender;\r\n    // emit OwnershipTransferred(address(0), _owner);\r\n  }\r\n\r\n  function owner() public view returns(address) {\r\n    return _owner;\r\n  }\r\n\r\n  modifier onlyOwner() {\r\n    require(isOwner());\r\n    _;\r\n  }\r\n\r\n  function isOwner() public view returns(bool) {\r\n    return msg.sender == _owner;\r\n  }\r\n\r\n  // function renounceOwnership() public onlyOwner {\r\n  //   emit OwnershipTransferred(_owner, address(0));\r\n  //   _owner = address(0);\r\n  // }\r\n\r\n  // function transferOwnership(address newOwner) public onlyOwner {\r\n  //   _transferOwnership(newOwner);\r\n  // }\r\n\r\n  // function _transferOwnership(address newOwner) internal {\r\n  //   require(newOwner != address(0));\r\n  //   emit OwnershipTransferred(_owner, newOwner);\r\n  //   _owner = newOwner;\r\n  // }\r\n}\r\n\r\ncontract DalatMilk is Ownable {\r\n\r\n    struct Profile{\r\n        string name;\r\n        string location;\r\n        bytes16 secret;\r\n        uint8 position;\r\n        uint32 date;\r\n    }\r\n    \r\n    mapping(address=>Profile) profile;\r\n\r\n    function checkUser() external view returns(uint8 actor) {\r\n        if(msg.sender == owner()){\r\n          return 1;\r\n        }else{\r\n          return profile[msg.sender].position;\r\n        }\r\n    }\r\n\r\n    function updateSecret(string memory secret) public onlyOwner {\r\n        bytes16 _secret = _generatePass(secret);\r\n        profile[owner()]= Profile('', '', _secret, 1, uint32(now));\r\n    }\r\n\r\n    function secretDeploy() external view returns(bool res) {\r\n       return profile[owner()].secret != bytes16(0);\r\n    }\r\n    \r\n    function getProfile(address _account) external view returns(string memory, string memory, uint8, uint32) {\r\n        Profile memory _acc = profile[_account];\r\n        return(_acc.name,_acc.location,_acc.position,_acc.date);\r\n    }\r\n\r\n    function userLogin(string calldata _key) external view returns(bool res) {\r\n        return _generatePass(_key) == profile[msg.sender].secret;\r\n    }\r\n    \r\n    \r\n    function updateProfile(address userAdd,string memory name, string memory location, uint8 position, string memory secret) public {\r\n        bytes16 _secret = _generatePass(secret);\r\n        profile[userAdd]= Profile(name, location, _secret, position, uint32(now));\r\n    }\r\n    \r\n    function checkSecret(string calldata _secret) external view onlyOwner returns(bool){\r\n        return _generatePass(_secret)==profile[owner()].secret;\r\n    }\r\n\r\n    function checkLogin(string calldata _secret) external view returns(bool){\r\n        return _generatePass(_secret)==profile[msg.sender].secret;\r\n    }\r\n    \r\n    function _generatePass(string memory secret) private pure returns(bytes16) {\r\n        return bytes16(keccak256(abi.encodePacked(secret)));\r\n    }\r\n    \r\n}\r\n",
   "sourcePath": "D:/blockchain/daLatMilk/appCore/contracts/DalatMilk.sol",
   "ast": {
     "absolutePath": "/D/blockchain/daLatMilk/appCore/contracts/DalatMilk.sol",
     "exportedSymbols": {
       "DalatMilk": [
-        245
+        263
       ],
       "Ownable": [
         41
       ]
     },
-    "id": 246,
+    "id": 264,
     "nodeType": "SourceUnit",
     "nodes": [
       {
@@ -146,7 +146,7 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 317,
+                        "referencedDeclaration": 335,
                         "src": "243:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
@@ -336,10 +336,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        320,
-                        321
+                        338,
+                        339
                       ],
-                      "referencedDeclaration": 320,
+                      "referencedDeclaration": 338,
                       "src": "426:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -410,7 +410,7 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 317,
+                        "referencedDeclaration": 335,
                         "src": "523:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
@@ -512,7 +512,7 @@
             "visibility": "public"
           }
         ],
-        "scope": 246,
+        "scope": 264,
         "src": "36:976:0"
       },
       {
@@ -542,9 +542,9 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 245,
+        "id": 263,
         "linearizedBaseContracts": [
-          245,
+          263,
           41
         ],
         "name": "DalatMilk",
@@ -687,7 +687,7 @@
             ],
             "name": "Profile",
             "nodeType": "StructDefinition",
-            "scope": 245,
+            "scope": 263,
             "src": "1055:142:0",
             "visibility": "public"
           },
@@ -696,7 +696,7 @@
             "id": 58,
             "name": "profile",
             "nodeType": "VariableDeclaration",
-            "scope": 245,
+            "scope": 263,
             "src": "1209:33:0",
             "stateVariable": true,
             "storageLocation": "default",
@@ -764,7 +764,7 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 317,
+                        "referencedDeclaration": 335,
                         "src": "1321:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
@@ -855,7 +855,7 @@
                                 "name": "msg",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 317,
+                                "referencedDeclaration": 335,
                                 "src": "1408:3:0",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_magic_message",
@@ -991,7 +991,7 @@
               ],
               "src": "1293:13:0"
             },
-            "scope": 245,
+            "scope": 263,
             "src": "1251:196:0",
             "stateMutability": "view",
             "superFunction": null,
@@ -1064,7 +1064,7 @@
                       "name": "_generatePass",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 244,
+                      "referencedDeclaration": 262,
                       "src": "1545:13:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_pure$_t_string_memory_ptr_$returns$_t_bytes16_$",
@@ -1234,7 +1234,7 @@
                               "name": "now",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 319,
+                              "referencedDeclaration": 337,
                               "src": "1630:3:0",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -1403,7 +1403,7 @@
               "parameters": [],
               "src": "1516:0:0"
             },
-            "scope": 245,
+            "scope": 263,
             "src": "1455:188:0",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -1617,7 +1617,7 @@
               ],
               "src": "1696:10:0"
             },
-            "scope": 245,
+            "scope": 263,
             "src": "1651:118:0",
             "stateMutability": "view",
             "superFunction": null,
@@ -2000,7 +2000,7 @@
               ],
               "src": "1840:45:0"
             },
-            "scope": 245,
+            "scope": 263,
             "src": "1781:229:0",
             "stateMutability": "view",
             "superFunction": null,
@@ -2052,7 +2052,7 @@
                         "name": "_generatePass",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 244,
+                        "referencedDeclaration": 262,
                         "src": "2109:13:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_pure$_t_string_memory_ptr_$returns$_t_bytes16_$",
@@ -2101,7 +2101,7 @@
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 317,
+                            "referencedDeclaration": 335,
                             "src": "2140:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
@@ -2233,7 +2233,7 @@
               ],
               "src": "2080:10:0"
             },
-            "scope": 245,
+            "scope": 263,
             "src": "2018:148:0",
             "stateMutability": "view",
             "superFunction": null,
@@ -2306,7 +2306,7 @@
                       "name": "_generatePass",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 244,
+                      "referencedDeclaration": 262,
                       "src": "2341:13:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_pure$_t_string_memory_ptr_$returns$_t_bytes16_$",
@@ -2444,7 +2444,7 @@
                               "name": "now",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 319,
+                              "referencedDeclaration": 337,
                               "src": "2441:3:0",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -2698,7 +2698,7 @@
               "parameters": [],
               "src": "2312:0:0"
             },
-            "scope": 245,
+            "scope": 263,
             "src": "2184:270:0",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -2750,7 +2750,7 @@
                         "name": "_generatePass",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 244,
+                        "referencedDeclaration": 262,
                         "src": "2567:13:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_pure$_t_string_memory_ptr_$returns$_t_bytes16_$",
@@ -2952,7 +2952,7 @@
               ],
               "src": "2543:6:0"
             },
-            "scope": 245,
+            "scope": 263,
             "src": "2466:156:0",
             "stateMutability": "view",
             "superFunction": null,
@@ -2960,9 +2960,242 @@
           },
           {
             "body": {
-              "id": 243,
+              "id": 244,
               "nodeType": "Block",
-              "src": "2709:70:0",
+              "src": "2702:76:0",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "commonType": {
+                      "typeIdentifier": "t_bytes16",
+                      "typeString": "bytes16"
+                    },
+                    "id": 242,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "argumentTypes": null,
+                      "arguments": [
+                        {
+                          "argumentTypes": null,
+                          "id": 235,
+                          "name": "_secret",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 229,
+                          "src": "2734:7:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_string_calldata_ptr",
+                            "typeString": "string calldata"
+                          }
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": [
+                          {
+                            "typeIdentifier": "t_string_calldata_ptr",
+                            "typeString": "string calldata"
+                          }
+                        ],
+                        "id": 234,
+                        "name": "_generatePass",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 262,
+                        "src": "2720:13:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_function_internal_pure$_t_string_memory_ptr_$returns$_t_bytes16_$",
+                          "typeString": "function (string memory) pure returns (bytes16)"
+                        }
+                      },
+                      "id": 236,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "kind": "functionCall",
+                      "lValueRequested": false,
+                      "names": [],
+                      "nodeType": "FunctionCall",
+                      "src": "2720:22:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes16",
+                        "typeString": "bytes16"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "==",
+                    "rightExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "baseExpression": {
+                          "argumentTypes": null,
+                          "id": 237,
+                          "name": "profile",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 58,
+                          "src": "2744:7:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Profile_$54_storage_$",
+                            "typeString": "mapping(address => struct DalatMilk.Profile storage ref)"
+                          }
+                        },
+                        "id": 240,
+                        "indexExpression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 238,
+                            "name": "msg",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 335,
+                            "src": "2752:3:0",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_magic_message",
+                              "typeString": "msg"
+                            }
+                          },
+                          "id": 239,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "sender",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": null,
+                          "src": "2752:10:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address_payable",
+                            "typeString": "address payable"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "2744:19:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Profile_$54_storage",
+                          "typeString": "struct DalatMilk.Profile storage ref"
+                        }
+                      },
+                      "id": 241,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "secret",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 49,
+                      "src": "2744:26:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes16",
+                        "typeString": "bytes16"
+                      }
+                    },
+                    "src": "2720:50:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "functionReturnParameters": 233,
+                  "id": 243,
+                  "nodeType": "Return",
+                  "src": "2713:57:0"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 245,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "checkLogin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 230,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 229,
+                  "name": "_secret",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 245,
+                  "src": "2650:23:0",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 228,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2650:6:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2649:25:0"
+            },
+            "returnParameters": {
+              "id": 233,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 232,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 245,
+                  "src": "2697:4:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 231,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2697:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2696:6:0"
+            },
+            "scope": 263,
+            "src": "2630:148:0",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": {
+              "id": 261,
+              "nodeType": "Block",
+              "src": "2865:70:0",
               "statements": [
                 {
                   "expression": {
@@ -2976,12 +3209,12 @@
                             "arguments": [
                               {
                                 "argumentTypes": null,
-                                "id": 238,
+                                "id": 256,
                                 "name": "secret",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 229,
-                                "src": "2762:6:0",
+                                "referencedDeclaration": 247,
+                                "src": "2918:6:0",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_string_memory_ptr",
                                   "typeString": "string memory"
@@ -2997,18 +3230,18 @@
                               ],
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 236,
+                                "id": 254,
                                 "name": "abi",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 304,
-                                "src": "2745:3:0",
+                                "referencedDeclaration": 322,
+                                "src": "2901:3:0",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_magic_abi",
                                   "typeString": "abi"
                                 }
                               },
-                              "id": 237,
+                              "id": 255,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -3016,13 +3249,13 @@
                               "memberName": "encodePacked",
                               "nodeType": "MemberAccess",
                               "referencedDeclaration": null,
-                              "src": "2745:16:0",
+                              "src": "2901:16:0",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_function_abiencodepacked_pure$__$returns$_t_bytes_memory_ptr_$",
                                 "typeString": "function () pure returns (bytes memory)"
                               }
                             },
-                            "id": 239,
+                            "id": 257,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -3030,7 +3263,7 @@
                             "lValueRequested": false,
                             "names": [],
                             "nodeType": "FunctionCall",
-                            "src": "2745:24:0",
+                            "src": "2901:24:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_bytes_memory_ptr",
                               "typeString": "bytes memory"
@@ -3044,18 +3277,18 @@
                               "typeString": "bytes memory"
                             }
                           ],
-                          "id": 235,
+                          "id": 253,
                           "name": "keccak256",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 311,
-                          "src": "2735:9:0",
+                          "referencedDeclaration": 329,
+                          "src": "2891:9:0",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_keccak256_pure$_t_bytes_memory_ptr_$returns$_t_bytes32_$",
                             "typeString": "function (bytes memory) pure returns (bytes32)"
                           }
                         },
-                        "id": 240,
+                        "id": 258,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -3063,7 +3296,7 @@
                         "lValueRequested": false,
                         "names": [],
                         "nodeType": "FunctionCall",
-                        "src": "2735:35:0",
+                        "src": "2891:35:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bytes32",
                           "typeString": "bytes32"
@@ -3077,20 +3310,20 @@
                           "typeString": "bytes32"
                         }
                       ],
-                      "id": 234,
+                      "id": 252,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
                       "lValueRequested": false,
                       "nodeType": "ElementaryTypeNameExpression",
-                      "src": "2727:7:0",
+                      "src": "2883:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_type$_t_bytes16_$",
                         "typeString": "type(bytes16)"
                       },
                       "typeName": "bytes16"
                     },
-                    "id": 241,
+                    "id": 259,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -3098,37 +3331,37 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "2727:44:0",
+                    "src": "2883:44:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes16",
                       "typeString": "bytes16"
                     }
                   },
-                  "functionReturnParameters": 233,
-                  "id": 242,
+                  "functionReturnParameters": 251,
+                  "id": 260,
                   "nodeType": "Return",
-                  "src": "2720:51:0"
+                  "src": "2876:51:0"
                 }
               ]
             },
             "documentation": null,
-            "id": 244,
+            "id": 262,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "_generatePass",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 230,
+              "id": 248,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 229,
+                  "id": 247,
                   "name": "secret",
                   "nodeType": "VariableDeclaration",
-                  "scope": 244,
-                  "src": "2657:20:0",
+                  "scope": 262,
+                  "src": "2813:20:0",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -3136,10 +3369,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 228,
+                    "id": 246,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2657:6:0",
+                    "src": "2813:6:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -3149,19 +3382,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2656:22:0"
+              "src": "2812:22:0"
             },
             "returnParameters": {
-              "id": 233,
+              "id": 251,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 232,
+                  "id": 250,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 244,
-                  "src": "2700:7:0",
+                  "scope": 262,
+                  "src": "2856:7:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3169,10 +3402,10 @@
                     "typeString": "bytes16"
                   },
                   "typeName": {
-                    "id": 231,
+                    "id": 249,
                     "name": "bytes16",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2700:7:0",
+                    "src": "2856:7:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes16",
                       "typeString": "bytes16"
@@ -3182,32 +3415,32 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2699:9:0"
+              "src": "2855:9:0"
             },
-            "scope": 245,
-            "src": "2634:145:0",
+            "scope": 263,
+            "src": "2790:145:0",
             "stateMutability": "pure",
             "superFunction": null,
             "visibility": "private"
           }
         ],
-        "scope": 246,
-        "src": "1016:1772:0"
+        "scope": 264,
+        "src": "1016:1928:0"
       }
     ],
-    "src": "0:2790:0"
+    "src": "0:2946:0"
   },
   "legacyAST": {
     "absolutePath": "/D/blockchain/daLatMilk/appCore/contracts/DalatMilk.sol",
     "exportedSymbols": {
       "DalatMilk": [
-        245
+        263
       ],
       "Ownable": [
         41
       ]
     },
-    "id": 246,
+    "id": 264,
     "nodeType": "SourceUnit",
     "nodes": [
       {
@@ -3301,7 +3534,7 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 317,
+                        "referencedDeclaration": 335,
                         "src": "243:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
@@ -3491,10 +3724,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        320,
-                        321
+                        338,
+                        339
                       ],
-                      "referencedDeclaration": 320,
+                      "referencedDeclaration": 338,
                       "src": "426:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -3565,7 +3798,7 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 317,
+                        "referencedDeclaration": 335,
                         "src": "523:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
@@ -3667,7 +3900,7 @@
             "visibility": "public"
           }
         ],
-        "scope": 246,
+        "scope": 264,
         "src": "36:976:0"
       },
       {
@@ -3697,9 +3930,9 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 245,
+        "id": 263,
         "linearizedBaseContracts": [
-          245,
+          263,
           41
         ],
         "name": "DalatMilk",
@@ -3842,7 +4075,7 @@
             ],
             "name": "Profile",
             "nodeType": "StructDefinition",
-            "scope": 245,
+            "scope": 263,
             "src": "1055:142:0",
             "visibility": "public"
           },
@@ -3851,7 +4084,7 @@
             "id": 58,
             "name": "profile",
             "nodeType": "VariableDeclaration",
-            "scope": 245,
+            "scope": 263,
             "src": "1209:33:0",
             "stateVariable": true,
             "storageLocation": "default",
@@ -3919,7 +4152,7 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 317,
+                        "referencedDeclaration": 335,
                         "src": "1321:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
@@ -4010,7 +4243,7 @@
                                 "name": "msg",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 317,
+                                "referencedDeclaration": 335,
                                 "src": "1408:3:0",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_magic_message",
@@ -4146,7 +4379,7 @@
               ],
               "src": "1293:13:0"
             },
-            "scope": 245,
+            "scope": 263,
             "src": "1251:196:0",
             "stateMutability": "view",
             "superFunction": null,
@@ -4219,7 +4452,7 @@
                       "name": "_generatePass",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 244,
+                      "referencedDeclaration": 262,
                       "src": "1545:13:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_pure$_t_string_memory_ptr_$returns$_t_bytes16_$",
@@ -4389,7 +4622,7 @@
                               "name": "now",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 319,
+                              "referencedDeclaration": 337,
                               "src": "1630:3:0",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -4558,7 +4791,7 @@
               "parameters": [],
               "src": "1516:0:0"
             },
-            "scope": 245,
+            "scope": 263,
             "src": "1455:188:0",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -4772,7 +5005,7 @@
               ],
               "src": "1696:10:0"
             },
-            "scope": 245,
+            "scope": 263,
             "src": "1651:118:0",
             "stateMutability": "view",
             "superFunction": null,
@@ -5155,7 +5388,7 @@
               ],
               "src": "1840:45:0"
             },
-            "scope": 245,
+            "scope": 263,
             "src": "1781:229:0",
             "stateMutability": "view",
             "superFunction": null,
@@ -5207,7 +5440,7 @@
                         "name": "_generatePass",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 244,
+                        "referencedDeclaration": 262,
                         "src": "2109:13:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_pure$_t_string_memory_ptr_$returns$_t_bytes16_$",
@@ -5256,7 +5489,7 @@
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 317,
+                            "referencedDeclaration": 335,
                             "src": "2140:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
@@ -5388,7 +5621,7 @@
               ],
               "src": "2080:10:0"
             },
-            "scope": 245,
+            "scope": 263,
             "src": "2018:148:0",
             "stateMutability": "view",
             "superFunction": null,
@@ -5461,7 +5694,7 @@
                       "name": "_generatePass",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 244,
+                      "referencedDeclaration": 262,
                       "src": "2341:13:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_pure$_t_string_memory_ptr_$returns$_t_bytes16_$",
@@ -5599,7 +5832,7 @@
                               "name": "now",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 319,
+                              "referencedDeclaration": 337,
                               "src": "2441:3:0",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -5853,7 +6086,7 @@
               "parameters": [],
               "src": "2312:0:0"
             },
-            "scope": 245,
+            "scope": 263,
             "src": "2184:270:0",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -5905,7 +6138,7 @@
                         "name": "_generatePass",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 244,
+                        "referencedDeclaration": 262,
                         "src": "2567:13:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_pure$_t_string_memory_ptr_$returns$_t_bytes16_$",
@@ -6107,7 +6340,7 @@
               ],
               "src": "2543:6:0"
             },
-            "scope": 245,
+            "scope": 263,
             "src": "2466:156:0",
             "stateMutability": "view",
             "superFunction": null,
@@ -6115,9 +6348,242 @@
           },
           {
             "body": {
-              "id": 243,
+              "id": 244,
               "nodeType": "Block",
-              "src": "2709:70:0",
+              "src": "2702:76:0",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "commonType": {
+                      "typeIdentifier": "t_bytes16",
+                      "typeString": "bytes16"
+                    },
+                    "id": 242,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "argumentTypes": null,
+                      "arguments": [
+                        {
+                          "argumentTypes": null,
+                          "id": 235,
+                          "name": "_secret",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 229,
+                          "src": "2734:7:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_string_calldata_ptr",
+                            "typeString": "string calldata"
+                          }
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": [
+                          {
+                            "typeIdentifier": "t_string_calldata_ptr",
+                            "typeString": "string calldata"
+                          }
+                        ],
+                        "id": 234,
+                        "name": "_generatePass",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 262,
+                        "src": "2720:13:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_function_internal_pure$_t_string_memory_ptr_$returns$_t_bytes16_$",
+                          "typeString": "function (string memory) pure returns (bytes16)"
+                        }
+                      },
+                      "id": 236,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "kind": "functionCall",
+                      "lValueRequested": false,
+                      "names": [],
+                      "nodeType": "FunctionCall",
+                      "src": "2720:22:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes16",
+                        "typeString": "bytes16"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "==",
+                    "rightExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "baseExpression": {
+                          "argumentTypes": null,
+                          "id": 237,
+                          "name": "profile",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 58,
+                          "src": "2744:7:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Profile_$54_storage_$",
+                            "typeString": "mapping(address => struct DalatMilk.Profile storage ref)"
+                          }
+                        },
+                        "id": 240,
+                        "indexExpression": {
+                          "argumentTypes": null,
+                          "expression": {
+                            "argumentTypes": null,
+                            "id": 238,
+                            "name": "msg",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 335,
+                            "src": "2752:3:0",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_magic_message",
+                              "typeString": "msg"
+                            }
+                          },
+                          "id": 239,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "sender",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": null,
+                          "src": "2752:10:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address_payable",
+                            "typeString": "address payable"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "2744:19:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Profile_$54_storage",
+                          "typeString": "struct DalatMilk.Profile storage ref"
+                        }
+                      },
+                      "id": 241,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "secret",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 49,
+                      "src": "2744:26:0",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes16",
+                        "typeString": "bytes16"
+                      }
+                    },
+                    "src": "2720:50:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "functionReturnParameters": 233,
+                  "id": 243,
+                  "nodeType": "Return",
+                  "src": "2713:57:0"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 245,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "checkLogin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 230,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 229,
+                  "name": "_secret",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 245,
+                  "src": "2650:23:0",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 228,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2650:6:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2649:25:0"
+            },
+            "returnParameters": {
+              "id": 233,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 232,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 245,
+                  "src": "2697:4:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 231,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2697:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2696:6:0"
+            },
+            "scope": 263,
+            "src": "2630:148:0",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": {
+              "id": 261,
+              "nodeType": "Block",
+              "src": "2865:70:0",
               "statements": [
                 {
                   "expression": {
@@ -6131,12 +6597,12 @@
                             "arguments": [
                               {
                                 "argumentTypes": null,
-                                "id": 238,
+                                "id": 256,
                                 "name": "secret",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 229,
-                                "src": "2762:6:0",
+                                "referencedDeclaration": 247,
+                                "src": "2918:6:0",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_string_memory_ptr",
                                   "typeString": "string memory"
@@ -6152,18 +6618,18 @@
                               ],
                               "expression": {
                                 "argumentTypes": null,
-                                "id": 236,
+                                "id": 254,
                                 "name": "abi",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 304,
-                                "src": "2745:3:0",
+                                "referencedDeclaration": 322,
+                                "src": "2901:3:0",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_magic_abi",
                                   "typeString": "abi"
                                 }
                               },
-                              "id": 237,
+                              "id": 255,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -6171,13 +6637,13 @@
                               "memberName": "encodePacked",
                               "nodeType": "MemberAccess",
                               "referencedDeclaration": null,
-                              "src": "2745:16:0",
+                              "src": "2901:16:0",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_function_abiencodepacked_pure$__$returns$_t_bytes_memory_ptr_$",
                                 "typeString": "function () pure returns (bytes memory)"
                               }
                             },
-                            "id": 239,
+                            "id": 257,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -6185,7 +6651,7 @@
                             "lValueRequested": false,
                             "names": [],
                             "nodeType": "FunctionCall",
-                            "src": "2745:24:0",
+                            "src": "2901:24:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_bytes_memory_ptr",
                               "typeString": "bytes memory"
@@ -6199,18 +6665,18 @@
                               "typeString": "bytes memory"
                             }
                           ],
-                          "id": 235,
+                          "id": 253,
                           "name": "keccak256",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 311,
-                          "src": "2735:9:0",
+                          "referencedDeclaration": 329,
+                          "src": "2891:9:0",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_keccak256_pure$_t_bytes_memory_ptr_$returns$_t_bytes32_$",
                             "typeString": "function (bytes memory) pure returns (bytes32)"
                           }
                         },
-                        "id": 240,
+                        "id": 258,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -6218,7 +6684,7 @@
                         "lValueRequested": false,
                         "names": [],
                         "nodeType": "FunctionCall",
-                        "src": "2735:35:0",
+                        "src": "2891:35:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bytes32",
                           "typeString": "bytes32"
@@ -6232,20 +6698,20 @@
                           "typeString": "bytes32"
                         }
                       ],
-                      "id": 234,
+                      "id": 252,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
                       "lValueRequested": false,
                       "nodeType": "ElementaryTypeNameExpression",
-                      "src": "2727:7:0",
+                      "src": "2883:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_type$_t_bytes16_$",
                         "typeString": "type(bytes16)"
                       },
                       "typeName": "bytes16"
                     },
-                    "id": 241,
+                    "id": 259,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -6253,37 +6719,37 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "2727:44:0",
+                    "src": "2883:44:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes16",
                       "typeString": "bytes16"
                     }
                   },
-                  "functionReturnParameters": 233,
-                  "id": 242,
+                  "functionReturnParameters": 251,
+                  "id": 260,
                   "nodeType": "Return",
-                  "src": "2720:51:0"
+                  "src": "2876:51:0"
                 }
               ]
             },
             "documentation": null,
-            "id": 244,
+            "id": 262,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "_generatePass",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 230,
+              "id": 248,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 229,
+                  "id": 247,
                   "name": "secret",
                   "nodeType": "VariableDeclaration",
-                  "scope": 244,
-                  "src": "2657:20:0",
+                  "scope": 262,
+                  "src": "2813:20:0",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -6291,10 +6757,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 228,
+                    "id": 246,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2657:6:0",
+                    "src": "2813:6:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -6304,19 +6770,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2656:22:0"
+              "src": "2812:22:0"
             },
             "returnParameters": {
-              "id": 233,
+              "id": 251,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 232,
+                  "id": 250,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 244,
-                  "src": "2700:7:0",
+                  "scope": 262,
+                  "src": "2856:7:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -6324,10 +6790,10 @@
                     "typeString": "bytes16"
                   },
                   "typeName": {
-                    "id": 231,
+                    "id": 249,
                     "name": "bytes16",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2700:7:0",
+                    "src": "2856:7:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes16",
                       "typeString": "bytes16"
@@ -6337,20 +6803,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2699:9:0"
+              "src": "2855:9:0"
             },
-            "scope": 245,
-            "src": "2634:145:0",
+            "scope": 263,
+            "src": "2790:145:0",
             "stateMutability": "pure",
             "superFunction": null,
             "visibility": "private"
           }
         ],
-        "scope": 246,
-        "src": "1016:1772:0"
+        "scope": 264,
+        "src": "1016:1928:0"
       }
     ],
-    "src": "0:2790:0"
+    "src": "0:2946:0"
   },
   "compiler": {
     "name": "solc",
@@ -6358,7 +6824,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.3",
-  "updatedAt": "2019-03-29T09:40:44.373Z",
+  "updatedAt": "2019-04-01T01:27:27.999Z",
   "devdoc": {
     "methods": {}
   },

@@ -7,6 +7,7 @@ import 'mdbreact/dist/css/mdb.css';
 import './index.css';
 import Login from './app/Login';
 import Deploy from './app/Deploy';
+import Farm from './app/Farm';
 import Home from './app/Home';
 import Register from './app/Register';
 import Navbar from './app/components/Navbar';
@@ -21,6 +22,7 @@ ReactDOM.render(
       <Switch>
         <Route path={"/"} component={ Home } exact/>
         <Route path={"/user"} component={ Deploy }/>
+        <Route path={"/farm"} component={ Farm }/>
         <Route path={"/login"} component={ Login }/>
         <Route path={"/register"} component={ Register }/>
         <Route component={ Home }/>

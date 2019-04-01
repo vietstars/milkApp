@@ -40,7 +40,7 @@ class Login extends Component {
 	    })
   	}
 
-  	addSecret(){
+  	checkSecret(){
   		const {cookies} = this.props;
   		let _key = this.refs.secret.state.innerValue;
   		if(parseInt(this.state.actor) === 1){
@@ -78,15 +78,33 @@ class Login extends Component {
 			    })
 	  		}
   		} else {
-  			
-
+  			this.state.dalatMilk.methods.checkLogin(_key).call({from:this.state.account}).then((isLogged)=>{
+  				this.setState({isLogged});
+  				if(isLogged){
+	  				POST(LOGGED, {id: this.state.account,exp: HOUREXP})
+			        .then(()=>{
+			        	cookies.set('isLogged', true, { maxAge:3600,path: '/' });
+			        	swal('Sign In finish','Thanks!','success').then(()=>{
+			        		window.location.reload();
+			        	});
+			        });
+  				}else{
+  					swal('Some thing wrong!',this.state.counter<=3?'Counter checked: '+ this.state.counter:'Please enter your correct secret key','error').then(()=>{
+			        	if(this.state.counter > 3){
+			        		window.location.href = '/'
+			        	}else{
+			        		this.setState({ counter:this.state.counter+1})
+			        	}
+			        });
+  				}
+		    })
   		}
   	}
 
   	render() {
 	    return (
 	      	<MDBContainer id="main-content">
-	      		<form action="" onSubmit={(e)=>{e.preventDefault();this.addSecret()}}>
+	      		<form action="" onSubmit={(e)=>{e.preventDefault();this.checkSecret()}}>
 		      	<section className="view intro-2">
 	                <div className="mask rgba-stylish-strong h-100 d-flex justify-content-center align-items-center">
 	                  <div className="container">

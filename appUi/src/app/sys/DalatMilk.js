@@ -1,4 +1,4 @@
-export const APP_LIST_ADDRESS ='0x3AB6589042342b2546f1EaD8affbcE0B89B8f302';
+export const APP_LIST_ADDRESS ='0xe2f10b0137dBa18b6658D9579E5Cd9ab1A640c3F';
 export const APP_LIST_ABI = [
     {
       "constant": true,
@@ -177,5 +177,25 @@ export const APP_LIST_ABI = [
       "stateMutability": "view",
       "type": "function",
       "signature": "0x60ea95f1"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_secret",
+          "type": "string"
+        }
+      ],
+      "name": "checkLogin",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x4f045d65"
     }
   ];

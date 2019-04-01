@@ -89,6 +89,10 @@ contract DalatMilk is Ownable {
     function checkSecret(string calldata _secret) external view onlyOwner returns(bool){
         return _generatePass(_secret)==profile[owner()].secret;
     }
+
+    function checkLogin(string calldata _secret) external view returns(bool){
+        return _generatePass(_secret)==profile[msg.sender].secret;
+    }
     
     function _generatePass(string memory secret) private pure returns(bytes16) {
         return bytes16(keccak256(abi.encodePacked(secret)));
