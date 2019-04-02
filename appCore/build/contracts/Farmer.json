@@ -1,0 +1,109 @@
+{
+  "contractName": "Farmer",
+  "abi": [],
+  "bytecode": "0x6080604052348015600f57600080fd5b50603580601d6000396000f3fe6080604052600080fdfea165627a7a723058208fd2e501d678acae383c9ef6790e81706d66d2105a2b5efe5d1c6c9c98b989710029",
+  "deployedBytecode": "0x6080604052600080fdfea165627a7a723058208fd2e501d678acae383c9ef6790e81706d66d2105a2b5efe5d1c6c9c98b989710029",
+  "sourceMap": "36:28:1:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;36:28:1;;;;;;;",
+  "deployedSourceMap": "36:28:1:-;;;;;",
+  "source": "pragma solidity >=0.4.21 <0.6.0;\r\n\r\ncontract Farmer {\r\n\r\n    \r\n}\r\n",
+  "sourcePath": "D:/blockchain/daLatMilk/appCore/contracts/Farmer.sol",
+  "ast": {
+    "absolutePath": "/D/blockchain/daLatMilk/appCore/contracts/Farmer.sol",
+    "exportedSymbols": {
+      "Farmer": [
+        266
+      ]
+    },
+    "id": 267,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 265,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.4",
+          ".21",
+          "<",
+          "0.6",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:32:1"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 266,
+        "linearizedBaseContracts": [
+          266
+        ],
+        "name": "Farmer",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 267,
+        "src": "36:28:1"
+      }
+    ],
+    "src": "0:66:1"
+  },
+  "legacyAST": {
+    "absolutePath": "/D/blockchain/daLatMilk/appCore/contracts/Farmer.sol",
+    "exportedSymbols": {
+      "Farmer": [
+        266
+      ]
+    },
+    "id": 267,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 265,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.4",
+          ".21",
+          "<",
+          "0.6",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:32:1"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 266,
+        "linearizedBaseContracts": [
+          266
+        ],
+        "name": "Farmer",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 267,
+        "src": "36:28:1"
+      }
+    ],
+    "src": "0:66:1"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.0+commit.1d4f565a.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.0.3",
+  "updatedAt": "2019-04-02T00:46:10.825Z",
+  "devdoc": {
+    "methods": {}
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}

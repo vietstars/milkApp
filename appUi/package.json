@@ -25,7 +25,9 @@
     "farm": "json-server -w farm.js -p 4001",
     "factory": "json-server -w factory.js -p 5001",
     "store": "json-server -w store.js -p 6001",
-    "invoice": "json-server -w invoice.js -p 7001"
+    "invoice": "json-server -w invoice.js -p 7001",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -36,5 +38,8 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "homepage": "http://vietstars.github.io/milkApp"
+  "homepage": "http://vietstars.github.io/milkApp",
+  "devDependencies": {
+    "gh-pages": "^2.0.1"
+  }
 }

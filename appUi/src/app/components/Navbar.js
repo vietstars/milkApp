@@ -50,15 +50,15 @@ class Navbar extends Component {
 	    })
 	    /**********************************/
 	    if(!this.state.account){
-	    		if(!this.state.paths.indexOf(pathname)===-1 || pathname==='/login' || pathname ==='/register'){
-  					window.location.href='/'
-  				}else{
-	    			swal("Please connect to Metamask","Our blockchain tech using that extension!",'error').then(()=>{
-	    				setTimeout(function(){
-							self.setState({ loading: false})
-						}, 2000)
-	    			})
-  				}
+    		if(!this.state.paths.indexOf(pathname)===-1 || pathname==='/login' || pathname ==='/register'){
+					window.location.href='/'
+				}else{
+    			swal("Please connect to Metamask","Our blockchain tech using that extension!",'error').then(()=>{
+    				setTimeout(function(){
+						self.setState({ loading: false})
+					}, 2000)
+    			})
+				}
 	    }else{
     		await dalatMilk.methods.checkUser().call({from:this.state.account}).then((actor)=>{
     			cookies.set('actor', actor, { maxAge:HOUREXP,path: '/' });
@@ -86,6 +86,7 @@ class Navbar extends Component {
 							    	cookies.set('isLogged', true, { maxAge:3600,path: '/' });
 							    	PUT(LOGGED+this.state.account, {exp:HOUREXP})
 						    	}else{
+									cookies.set('isLogged', false, { maxAge:-3600,path: '/' });
 						    		DEL(LOGGED+this.state.account)
 								    setTimeout(function(){
 										self.setState({ loading: false})
@@ -94,6 +95,11 @@ class Navbar extends Component {
 		    				}
 				    	})
 		    		}    		
+		    	}
+		    }else{
+				cookies.set('isLogged', false, { maxAge:-3600,path: '/' });
+		    	if(pathname === '/login'){
+		    		window.location.href = '/'
 		    	}
 		    }		    
 	    }

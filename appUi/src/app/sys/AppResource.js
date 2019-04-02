@@ -3,6 +3,7 @@ export const DRAFF ='http://localhost:3001/draff/';
 export const FARM ='http://localhost:4001/farm/';
 export const FACTORY ='http://localhost:5001/factory/';
 export const STORE ='http://localhost:6001/store/';
+export const INVOICE ='http://localhost:7001/invoice/';
 const HEADERS = {'Accept': 'application/json','Content-Type': 'application/json'};
 export const HOUREXP = (Date.now()*1e3) + 3600;
 export const HOURSEXP = (Date.now()*1e3) + 7200;

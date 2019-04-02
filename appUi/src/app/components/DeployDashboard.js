@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Deploybg from '../img/Deploy-processing.jpg';
 import Web3 from 'web3';
-import { LOGGED,DRAFF,GET } from '../sys/AppResource';
+import { LOGGED,DRAFF,FARM,FACTORY,STORE,GET } from '../sys/AppResource';
 import DeployNotification from './DeployNotification';
 import { MDBDataTable } from 'mdbreact';
 
@@ -17,7 +17,10 @@ class DeployDashboard extends Component {
 	      	visited: 0,
 	      	farm: [],
 	      	factory: [],
-	      	store: []
+	      	store: [],
+	      	farmCount: 0,
+			factoryCount: 0,
+			storeCount: 0
 	    }
   	}
 
@@ -38,20 +41,32 @@ class DeployDashboard extends Component {
 	    	res.map((e)=>{e.apartment===2?farm.push(e):(e.apartment===3?factory.push(e):store.push(e));return true})
 	    	this.setState({ farm, factory, store });
 	    })
+	    await GET(FARM).then((res)=>{
+	    	let farmCount = res.length
+	    	this.setState({ farmCount })
+	    })
+	    await GET(FACTORY).then((res)=>{
+	    	let factoryCount = res.length
+	    	this.setState({ factoryCount })
+	    })
+	    await GET(STORE).then((res)=>{
+	    	let storeCount = res.length
+	    	this.setState({ storeCount })
+	    })
   	}
 
   	render() {
 	  	const visited = {
 	    	columns: [
 		      {
-		        label: 'Address',
-		        field: 'id',
-		        width: '70%'
-		      },
-		      {
 		        label: 'Visited at',
 		        field: 'exp',
-		        width: '30%'
+		        width: '10'
+		      },
+		      {
+		        label: 'Address',
+		        field: 'id',
+		        width: '80'
 		      }],
 		    rows: this.state.visited
 	  	}
@@ -83,7 +98,7 @@ class DeployDashboard extends Component {
 							    </div>
 						    </div>        
 				  		</div>				
-					  	<DeployNotification visited={this.state.visited.length} farm={this.state.farm.length} factory={this.state.factory.length} store={this.state.store.length}/>
+					  	<DeployNotification visited={this.state.visited.length} farm={this.state.farm.length} factory={this.state.factory.length} store={this.state.store.length} farmCount={this.state.farmCount} factoryCount={this.state.factoryCount} storeCount={this.state.storeCount} />
 					</div>
 				</div>
 		    </main>

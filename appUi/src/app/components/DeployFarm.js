@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {APP_LIST_ABI,APP_LIST_ADDRESS} from '../sys/DalatMilk';
 import Web3 from 'web3';
-import { LOGGED,DRAFF,FARM,GET,POST,DEL } from '../sys/AppResource';
+import { LOGGED,DRAFF,FARM,FACTORY,STORE,GET,POST,DEL } from '../sys/AppResource';
 import swal from 'sweetalert';
 import DeployNotification from './DeployNotification';
 import { MDBDataTable, MDBInput, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from 'mdbreact';
@@ -23,7 +23,10 @@ class DeployFarm extends Component {
 	      	chkbox:true,
 	      	modal:false,
 	      	infomation:'Infomation are available now!',
-	      	token:'0x0'
+	      	token:'0x0',
+	      	farmCount:0,
+			factoryCount:0,
+			storeCount:0
 	    }
   	}
 
@@ -48,6 +51,18 @@ class DeployFarm extends Component {
     	let farm=[]
 	    this.state.list.map((v)=>{let a = {}; a.checkbox=<MDBInput label=" "  type="checkbox" value={v.id}/>;a.farm=v.name;a.token=v.id;a.act=<MDBBtn color="warning" size="sm" rounded onClick={this.getInfomation.bind(this,v.id)}>Infomation</MDBBtn>;farm.push(a); return true});	
 	    this.setState({ farm })
+	    await GET(FARM).then((res)=>{
+	    	let farmCount = res.length
+	    	this.setState({ farmCount })
+	    })
+	    await GET(FACTORY).then((res)=>{
+	    	let factoryCount = res.length
+	    	this.setState({ factoryCount })
+	    })
+	    await GET(STORE).then((res)=>{
+	    	let storeCount = res.length
+	    	this.setState({ storeCount })
+	    })
   	}
 
   	toggle(){
@@ -137,7 +152,7 @@ class DeployFarm extends Component {
 						    	</div>
 						    </div>        
 				  	  	</div>
-				  		<DeployNotification visited={this.state.visited} farm={this.state.farm.length} factory={this.state.factory.length} store={this.state.store.length}/>
+				  		<DeployNotification visited={this.state.visited} farm={this.state.farm.length} factory={this.state.factory.length} store={this.state.store.length} farmCount={this.state.farmCount} factoryCount={this.state.factoryCount} storeCount={this.state.storeCount} />
 				  	</div>
 				</div>
 				<MDBModal isOpen={ this.state.modal } toggle={this.toggle.bind(this,2)} >

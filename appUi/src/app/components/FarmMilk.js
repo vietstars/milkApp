@@ -3,9 +3,9 @@ import Farmbg from '../img/Farm-processing.jpg';
 import Web3 from 'web3';
 import { LOGGED,GET } from '../sys/AppResource';
 import FarmNotification from './FarmNotification';
-import { MDBDataTable } from 'mdbreact';
+import { MDBDataTable, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from 'mdbreact';
 
-class FarmDashboard extends Component {
+class FarmMilk extends Component {
 
 	componentWillMount(){
 		this.loadBlockchainData()
@@ -14,10 +14,7 @@ class FarmDashboard extends Component {
 	constructor(props){
 	    super(props)
 	    this.state = {
-	      	visited: 0,
-	      	farm: [],
-	      	factory: [],
-	      	store: []
+	      	modal:false
 	    }
   	}
 
@@ -32,6 +29,12 @@ class FarmDashboard extends Component {
 	    	this.setState({ visited })
 	    })
   	}
+
+  	toggle(){
+	  	this.setState({
+	    	modal: !this.state.modal
+	  	});
+	}
 
   	render() {
 	  	const visited = {
@@ -56,7 +59,7 @@ class FarmDashboard extends Component {
 					    <h4 className="mb-2 mb-sm-0 pt-1">
 					      <a href="#123" target="_blank">Farm</a>
 					      <span>/</span>
-					      <span>Dashboard</span>
+					      <span>Milk list</span>
 					    </h4>
 					    <form className="d-flex justify-content-center">
 					      <input type="search" placeholder="Type your query" aria-label="Search" className="form-control" />
@@ -69,7 +72,10 @@ class FarmDashboard extends Component {
 					<div className="row wow fadeIn">
 					  	<div className="col-md-9">
 						    <div className="card">
-						      	<div className="card-header">New orders</div>
+						      	<div className="card-header">
+						      		Milk list
+						      		<span className="float-right mr-2"><a href="#!" onClick={this.toggle.bind(this,2)} className="text-success"><i className="fa fa-plus fa-2x" aria-hidden="true"></i></a></span>
+						      	</div>
 						      	<div className="card-body customer-style">
 							      <img src={Farmbg} className="img-fluid" alt="" />
 							      <MDBDataTable striped hover data={visited} />
@@ -79,9 +85,18 @@ class FarmDashboard extends Component {
 					  	<FarmNotification/>
 					</div>
 				</div>
+				<MDBModal isOpen={ this.state.modal } toggle={this.toggle.bind(this,2)} >
+			        <MDBModalHeader toggle={this.toggle.bind(this,2)} >New Milk infomation</MDBModalHeader>
+			        <MDBModalBody>
+			        	Milk info	        	 	
+			        </MDBModalBody>
+			        <MDBModalFooter>
+			          <MDBBtn color="secondary" onClick={this.toggle.bind(this,2)}>Close</MDBBtn>
+			        </MDBModalFooter>
+		      	</MDBModal>
 		    </main>
 	    );
   	}
 }
 
-export default FarmDashboard;
+export default FarmMilk;

@@ -1,4 +1,4 @@
-export const APP_LIST_ADDRESS ='0xe2f10b0137dBa18b6658D9579E5Cd9ab1A640c3F';
+export const APP_LIST_ADDRESS ='0xeBEA84Bf2E6d0f998D280974e543081dBD59FCc2';
 export const APP_LIST_ABI = [
     {
       "constant": true,

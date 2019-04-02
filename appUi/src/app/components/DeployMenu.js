@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+import { instanceOf } from 'prop-types';
+import { withCookies, Cookies } from 'react-cookie';
 
-withRouter(props => <DeployMenu {...props}/>);
+
+withRouter(props => <DeployMenu {...props} cookies={instanceOf(Cookies).isRequired}/>);
 
 class DeployMenu extends Component {
 
 	constructor(props){
 	    super(props)
+	    const { cookies } = props;
+	    if(parseInt(cookies.get('actor'))!==1)window.location.href='/';    
 	    this.state = {
 	       paths: ['/user/farm','/user/factory','/user/store'],
 	    }
@@ -34,4 +39,4 @@ class DeployMenu extends Component {
   	}
 }
 
-export default DeployMenu;
+export default withCookies(DeployMenu);
