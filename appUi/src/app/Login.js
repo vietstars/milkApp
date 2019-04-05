@@ -4,8 +4,9 @@ import { instanceOf } from 'prop-types';
 import { withCookies, Cookies } from 'react-cookie';
 import Web3 from 'web3';
 import {APP_LIST_ABI,APP_LIST_ADDRESS} from './sys/DalatMilk';
-import {LOGGED,POST,HOUREXP} from './sys/AppResource';
+import {LOGGED,POST,HOUREXP,HEADERS,SECRET_KEY,expiresIn} from './sys/AppResource';
 import swal from 'sweetalert';
+import jwt from 'jsonwebtoken';
 import './css/login.css';
 
 class Login extends Component {
@@ -43,11 +44,17 @@ class Login extends Component {
   	checkSecret(){
   		const {cookies} = this.props;
   		let _key = this.refs.secret.state.innerValue;
+  		let token = this.createToken({appKey:APP_LIST_ADDRESS})
+  		let userToken = this.createToken({appKey:this.state.account})
+  		let authorization = 'milkApp '+token
+		let loggedHeader = {...HEADERS,authorization}
   		if(parseInt(this.state.actor) === 1){
 	  		if(!this.state.isSecret){
 		  		this.state.dalatMilk.methods.updateSecret(_key).send({from:this.state.account}).once('receipt', (rec)=>{
 			      	this.setState({isSecret:true})
-					POST(LOGGED, {id: this.state.account,exp: HOUREXP})
+			      	cookies.set('logged', token, { maxAge:18000,path: '/' });
+			      	cookies.set('userToken', userToken, { maxAge:18000,path: '/' });
+					POST(LOGGED, {id: this.state.account,exp: HOUREXP}, loggedHeader)
 				        .then(()=>{
 				        	cookies.set('isLogged', true, { maxAge:3600, path: '/' });
 				        	swal('Sign In finish','Thanks!','success').then(()=>{
@@ -58,8 +65,10 @@ class Login extends Component {
 	  		}else{
 	  			this.state.dalatMilk.methods.checkSecret(_key).call({from:this.state.account}).then((isLogged)=>{
 	  				this.setState({isLogged});
+	  				cookies.set('logged', token, { maxAge:18000,path: '/' });
+			      	cookies.set('userToken', userToken, { maxAge:18000,path: '/' });
 	  				if(isLogged){
-		  				POST(LOGGED, {id: this.state.account,exp: HOUREXP})
+		  				POST(LOGGED, {id: this.state.account,exp: HOUREXP}, loggedHeader)
 				        .then(()=>{
 				        	cookies.set('isLogged', true, { maxAge:3600,path: '/' });
 				        	swal('Sign In finish','Thanks!','success').then(()=>{
@@ -79,9 +88,11 @@ class Login extends Component {
 	  		}
   		} else {
   			this.state.dalatMilk.methods.checkLogin(_key).call({from:this.state.account}).then((isLogged)=>{
-  				this.setState({isLogged});
+  				this.setState({isLogged});  
+  				cookies.set('logged', token, { maxAge:18000,path: '/' });		
+		      	cookies.set('userToken', userToken, { maxAge:18000,path: '/' });		
   				if(isLogged){
-	  				POST(LOGGED, {id: this.state.account,exp: HOUREXP})
+	  				POST(LOGGED, {id: this.state.account,exp: HOUREXP}, loggedHeader)
 			        .then(()=>{
 			        	cookies.set('isLogged', true, { maxAge:3600,path: '/' });
 			        	swal('Sign In finish','Thanks!','success').then(()=>{
@@ -100,6 +111,10 @@ class Login extends Component {
 		    })
   		}
   	}
+
+  	createToken(payload){
+	  	return jwt.sign(payload, SECRET_KEY, {expiresIn})
+	}
 
   	render() {
 	    return (

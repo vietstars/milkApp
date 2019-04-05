@@ -3,7 +3,7 @@ import {APP_LIST_ABI,APP_LIST_ADDRESS} from '../sys/DalatMilk';
 import Web3 from 'web3';
 import { LOGGED,DRAFF,FARM,GET,POST,DEL } from '../sys/AppResource';
 import swal from 'sweetalert';
-import DeployNotification from './DeployNotification';
+import FarmNotification from './FarmNotification';
 import { MDBDataTable, MDBInput, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from 'mdbreact';
 
 
@@ -137,7 +137,7 @@ class FarmLog extends Component {
 						    	</div>
 						    </div>        
 				  	  	</div>
-				  		<DeployNotification visited={this.state.visited} farm={this.state.farm.length} factory={this.state.factory.length} store={this.state.store.length}/>
+				  		<FarmNotification />
 				  	</div>
 				</div>
 				<MDBModal isOpen={ this.state.modal } toggle={this.toggle.bind(this,2)} >

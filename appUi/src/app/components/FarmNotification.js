@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
 import Web3 from 'web3';
+import { instanceOf } from 'prop-types';
+import { withCookies, Cookies } from 'react-cookie';
 import {APP_LIST_ABI,APP_LIST_ADDRESS} from '../sys/DalatMilk';
 import htmlRender from 'react-render-html';
-import { LOGGED,FARM,FACTORY,STORE,GET } from '../sys/AppResource';
+import { LOGGED,FARM,FACTORY,STORE,GET,HEADERS } from '../sys/AppResource';
 import { MDBTable,MDBTableHead,MDBTableBody,MDBBtn,MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from 'mdbreact';
 
 class FarmNotification extends Component {
 
+	static propTypes = {
+	    cookies: instanceOf(Cookies).isRequired
+  	};
 
 	componentWillMount(){
 		this.loadBlockchainData()
@@ -14,15 +19,24 @@ class FarmNotification extends Component {
 
 	constructor(props){
 	    super(props)
+	    const { cookies } = props;
+	    let token = cookies.get('logged')
+	    let userToken = cookies.get('userToken')
+	    let authorization = 'milkApp '+token
+	    let loggedHeader = {...HEADERS,authorization}
+	    authorization = 'milkApp '+userToken
+	    let userHeader = {...HEADERS,authorization}
 	    this.state = {
-	       apartment:'unknow apartment',
-	       modal:false,
-	       visited:0,
-	       farmSelect:'',
-	       factorySelect:'',
-	       storeSelect:'',
-	       selection:'',
-	       info:''
+	       	apartment:'unknow apartment',
+	       	modal:false,
+	       	visited:0,
+	       	farmSelect:'',
+	       	factorySelect:'',
+	       	storeSelect:'',
+	       	selection:'',
+	       	info:'',
+			loggedHeader:loggedHeader,
+			userHeader:userHeader
 	    }
   	}
 
@@ -33,11 +47,11 @@ class FarmNotification extends Component {
 	    await web3.eth.getCoinbase((eror,account)=>{
 	    	this.setState({ account })
 	    })
-	    await GET(LOGGED).then((res)=>{
+	    await GET(LOGGED,this.state.loggedHeader).then((res)=>{
 	    	let visited = res.length;
 	    	this.setState({ visited })
 	    })
-	    await GET(FARM).then((res)=>{
+	    await GET(FARM,this.state.userHeader).then((res)=>{
 	    	let farm = res.length;
 	    	let farmSelect = '<option hidden={true}>Choose your farm</option>'
 	        res.forEach(e=>{
@@ -45,7 +59,7 @@ class FarmNotification extends Component {
 	        })
 	    	this.setState({ farm,farmSelect })
 	    })
-	    await GET(FACTORY).then((res)=>{
+	    await GET(FACTORY,this.state.userHeader).then((res)=>{
 	    	let factory = res.length;
 	    	let factorySelect = '<option hidden={true}>Choose your factory</option>'
 	        res.forEach(e=>{
@@ -53,7 +67,7 @@ class FarmNotification extends Component {
 	        })
 	    	this.setState({ factory,factorySelect })
 	    })
-	    await GET(STORE).then((res)=>{
+	    await GET(STORE,this.state.userHeader).then((res)=>{
 	    	let store = res.length;
 	    	let storeSelect = '<option hidden={true}>Choose your store</option>'
 	        res.forEach(e=>{
@@ -179,4 +193,4 @@ class FarmNotification extends Component {
   	}
 }
 
-export default FarmNotification;
+export default withCookies(FarmNotification);

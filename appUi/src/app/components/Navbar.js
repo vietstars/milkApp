@@ -6,7 +6,7 @@ import {MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavbarToggler, M
 import swal from 'sweetalert';
 import Web3 from 'web3';
 import {APP_LIST_ABI,APP_LIST_ADDRESS} from '../sys/DalatMilk';
-import {LOGGED,GET,PUT,DEL,HOUREXP} from '../sys/AppResource';
+import {LOGGED,GET,PUT,DEL,HOUREXP,HEADERS} from '../sys/AppResource';
 import Loading from './Loading';
 
 withRouter(props => <Navbar {...props} cookies={instanceOf(Cookies).isRequired}/>);
@@ -44,7 +44,7 @@ class Navbar extends Component {
 	    	this.setState({ account })
 	    })
 	    /**********server side*************/
-	    await GET(LOGGED).then((res)=>{
+	    await GET(LOGGED,this.state.loggedHeader).then((res)=>{
 	    	if(res.exp<(Date.now()/1e3))
 	    		DEL(LOGGED+this.state.account)
 	    })
@@ -79,12 +79,12 @@ class Navbar extends Component {
 		    		window.location.href = '/'
 		    	}else{		
 		    		if(this.state.isLogged){
-		    			await GET(LOGGED+this.state.account).then((res)=>{
+		    			await GET(LOGGED+this.state.account,this.state.loggedHeader).then((res)=>{
 		    				if(res.exp!== undefined){
 						    	if(res.exp>(Date.now()/1e3)){
 							    	this.setState({loading: false})
 							    	cookies.set('isLogged', true, { maxAge:3600,path: '/' });
-							    	PUT(LOGGED+this.state.account, {exp:HOUREXP})
+							    	PUT(LOGGED+this.state.account, {exp:HOUREXP},this.state.loggedHeader)
 						    	}else{
 									cookies.set('isLogged', false, { maxAge:-3600,path: '/' });
 						    		DEL(LOGGED+this.state.account)
@@ -108,6 +108,9 @@ class Navbar extends Component {
 	constructor(props){
 	    super(props)
 	    const { cookies } = props;
+	    let token = cookies.get('logged')
+	    let authorization = 'milkApp '+token
+	    let loggedHeader = {...HEADERS,authorization}
 	    this.state = {
 	       loading: true,
 	       paths: ['/about','/customer','/guide','/login','/register'],
@@ -115,15 +118,17 @@ class Navbar extends Component {
 	       account:false,
 	       isOpen:false,
 	       isLogged:cookies.get('isLogged')||false,
-	       actor:cookies.get('actor')||0
+	       actor:cookies.get('actor')||0,
+	       loggedHeader: loggedHeader
 	    }
   	}
   	logout(){
 	    const { cookies } = this.props;
 		cookies.set('actor', false, { maxAge:-3600,path: '/' });
 		cookies.set('isLogged', false, { maxAge:-3600,path: '/' });
+		cookies.set('logged', false, { maxAge:-3600,path: '/' });
   		swal('Logout finish!','Thanks.','success').then(()=>{
-	  		DEL(LOGGED+this.state.account).then((res)=>{
+	  		DEL(LOGGED+this.state.account,this.state.loggedHeader).then((res)=>{
 	    		this.setState({isLogged:false})
 	    		window.location.reload()
 		    })

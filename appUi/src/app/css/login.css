@@ -1,3 +1,7 @@
+.md-form.md-outline{
+  margin-bottom: 5px;
+}
+
 #main-content {
   background: url("../img/Bg.jpg")no-repeat center center;
   background-size: contain;

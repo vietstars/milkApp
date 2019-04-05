@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 import {APP_LIST_ABI,APP_LIST_ADDRESS} from '../sys/DalatMilk';
 import Web3 from 'web3';
-import { LOGGED,DRAFF,FARM,FACTORY,STORE,GET,POST,DEL } from '../sys/AppResource';
+import { instanceOf } from 'prop-types';
+import { withCookies, Cookies } from 'react-cookie';
+import { LOGGED,DRAFF,FARM,FACTORY,STORE,GET,POST,DEL,HEADERS } from '../sys/AppResource';
 import swal from 'sweetalert';
 import DeployNotification from './DeployNotification';
 import { MDBDataTable, MDBInput, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from 'mdbreact';
 
 class DeployFactory extends Component {
+
+	static propTypes = {
+	    cookies: instanceOf(Cookies).isRequired
+  	};
 
 	componentWillMount(){
 		this.loadBlockchainData()
@@ -14,6 +20,13 @@ class DeployFactory extends Component {
 
 	constructor(props){
 	    super(props)
+	    const { cookies } = props
+	    let token = cookies.get('logged')
+	    let userToken = cookies.get('userToken')
+	    let authorization = 'milkApp '+token
+	    let loggedHeader = {...HEADERS,authorization}
+	    authorization = 'milkApp '+userToken
+	    let userHeader = {...HEADERS,authorization}
 	    this.state = {
 	      	visited: 0,
 	      	farm: [],
@@ -25,7 +38,9 @@ class DeployFactory extends Component {
 	      	token:'0x0',
 	      	farmCount:0,
 			factoryCount:0,
-			storeCount:0
+			storeCount:0,
+			loggedHeader:loggedHeader,
+			userHeader:userHeader
 	    }
   	}
 
@@ -36,10 +51,10 @@ class DeployFactory extends Component {
 	    await web3.eth.getCoinbase((eror,account)=>{
 	    	this.setState({ account })
 	    })
-	    await GET(LOGGED).then((res)=>{
+	    await GET(LOGGED,this.state.loggedHeader).then((res)=>{
 	    	this.setState({ visited:res.length })
 	    })
-	    await GET(DRAFF).then((res)=>{
+	    await GET(DRAFF,this.state.loggedHeader).then((res)=>{
 	    	let farm = [],list = [],store = [];
 	    	res.map((e)=>{
 	    		e.apartment===2?farm.push(e):(e.apartment===3?list.push(e):store.push(e));
@@ -50,15 +65,15 @@ class DeployFactory extends Component {
     	let factory=[]
 	    this.state.list.map((v)=>{let a = {}; a.checkbox=<MDBInput label=" "  type="checkbox" value={v.id}/>;a.factory=v.name;a.token=v.id;a.act=<MDBBtn color="warning" size="sm" rounded onClick={this.getInfomation.bind(this,v.id)}>Infomation</MDBBtn>;factory.push(a); return true});	
 	    this.setState({ factory })	    
-	    await GET(FARM).then((res)=>{
+	    await GET(FARM, this.state.userHeader).then((res)=>{
 	    	let farmCount = res.length
 	    	this.setState({ farmCount })
 	    })
-	    await GET(FACTORY).then((res)=>{
+	    await GET(FACTORY, this.state.userHeader).then((res)=>{
 	    	let factoryCount = res.length
 	    	this.setState({ factoryCount })
 	    })
-	    await GET(STORE).then((res)=>{
+	    await GET(STORE, this.state.userHeader).then((res)=>{
 	    	let storeCount = res.length
 	    	this.setState({ storeCount })
 	    })
@@ -167,4 +182,4 @@ class DeployFactory extends Component {
 	    );
   	}
 }
-export default DeployFactory;
+export default withCookies(DeployFactory);

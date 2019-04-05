@@ -1,9 +1,4 @@
-const Web3 = require('web3');
-const web3 = new Web3(Web3.givenProvider || "http://localhost:7545")
-let appKey      = '0xeBEA84Bf2E6d0f998D280974e543081dBD59FCc2';
-web3.eth.getCoinbase((eror,account)=>{
-	appKey = account
-})
+const appKey      = '0xeBEA84Bf2E6d0f998D280974e543081dBD59FCc2';
 const SECRET_KEY  = 'milkApp';
 const expiresIn   = '5h';
 
@@ -13,7 +8,7 @@ const jsonServer = require('json-server')
 const jwt = require('jsonwebtoken')
 
 const server = jsonServer.create()
-const router = jsonServer.router('./src/app/sys/store.json')
+const router = jsonServer.router('./src/app/sys/draff.json')
 const middlewares = jsonServer.defaults({ watch : true })
 
 server.use(middlewares)
@@ -35,24 +30,28 @@ server.post('/authenticate', (req, res) => {
 })
 
 server.use(/^(?!\/authenticate).*$/,  (req, res, next) => {
-  if (req.headers.authorization === undefined || req.headers.authorization.split(' ')[0] !== 'milkApp') {
-    const status = 401
-    const message = 'Error in authorization format'
-    res.status(status).json({status, message})
-    return
-  }
-  try {
-     lowSecure(req.headers.authorization.split(' ')[1])
-     next()
-  } catch (err) {
-    const status = 401
-    const message = 'Error access_token is revoked'
-    res.status(status).json({status, message})
+  if(req.method !== 'POST'){
+    if (req.headers.authorization === undefined || req.headers.authorization.split(' ')[0] !== 'milkApp') {
+      const status = 401
+      const message = 'Error in authorization format'
+      res.status(status).json({status, message})
+      return
+    }
+    try {
+       lowSecure(req.headers.authorization.split(' ')[1])
+       next()
+    } catch (err) {
+      const status = 401
+      const message = 'Error access_token is revoked'
+      res.status(status).json({status, message})
+    }
+  }else{
+    next()
   }
 })
 
 server.use(router)
 
-server.listen(6001, () => {
-  console.log('Store Service listen: 6001')
+server.listen(3002, () => {
+  console.log('Draff Service listen: 3002')
 })

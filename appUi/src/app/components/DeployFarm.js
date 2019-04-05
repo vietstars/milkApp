@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import {APP_LIST_ABI,APP_LIST_ADDRESS} from '../sys/DalatMilk';
 import Web3 from 'web3';
-import { LOGGED,DRAFF,FARM,FACTORY,STORE,GET,POST,DEL } from '../sys/AppResource';
+import { instanceOf } from 'prop-types';
+import { withCookies, Cookies } from 'react-cookie';
+import { LOGGED,DRAFF,FARM,FACTORY,STORE,GET,POST,DEL,HEADERS } from '../sys/AppResource';
 import swal from 'sweetalert';
 import DeployNotification from './DeployNotification';
 import { MDBDataTable, MDBInput, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from 'mdbreact';
@@ -9,12 +11,23 @@ import { MDBDataTable, MDBInput, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader,
 
 class DeployFarm extends Component {
 
+	static propTypes = {
+	    cookies: instanceOf(Cookies).isRequired
+  	};
+
   	componentWillMount(){
 		this.loadBlockchainData()
   	}
 
 	constructor(props){
 	    super(props)
+	    const { cookies } = props
+	    let token = cookies.get('logged')
+	    let userToken = cookies.get('userToken')
+	    let authorization = 'milkApp '+token
+	    let loggedHeader = {...HEADERS,authorization}
+	    authorization = 'milkApp '+userToken
+	    let userHeader = {...HEADERS,authorization}
 	    this.state = {
 	      	visited: 0,
 	      	farm: [],
@@ -26,7 +39,9 @@ class DeployFarm extends Component {
 	      	token:'0x0',
 	      	farmCount:0,
 			factoryCount:0,
-			storeCount:0
+			storeCount:0,
+			loggedHeader:loggedHeader,
+			userHeader:userHeader
 	    }
   	}
 
@@ -37,10 +52,10 @@ class DeployFarm extends Component {
 	    await web3.eth.getCoinbase((eror,account)=>{
 	    	this.setState({ account })
 	    })
-	    await GET(LOGGED).then((res)=>{
+	    await GET(LOGGED,this.state.loggedHeader).then((res)=>{
 	    	this.setState({ visited:res.length })
 	    })
-	    await GET(DRAFF).then((res)=>{
+	    await GET(DRAFF,this.state.loggedHeader).then((res)=>{
 	    	let factory = [],list = [],store = [];
 	    	res.map((e)=>{
 	    		e.apartment===2?list.push(e):(e.apartment===3?factory.push(e):store.push(e));
@@ -51,15 +66,15 @@ class DeployFarm extends Component {
     	let farm=[]
 	    this.state.list.map((v)=>{let a = {}; a.checkbox=<MDBInput label=" "  type="checkbox" value={v.id}/>;a.farm=v.name;a.token=v.id;a.act=<MDBBtn color="warning" size="sm" rounded onClick={this.getInfomation.bind(this,v.id)}>Infomation</MDBBtn>;farm.push(a); return true});	
 	    this.setState({ farm })
-	    await GET(FARM).then((res)=>{
+	    await GET(FARM,this.state.userHeader).then((res)=>{
 	    	let farmCount = res.length
 	    	this.setState({ farmCount })
 	    })
-	    await GET(FACTORY).then((res)=>{
+	    await GET(FACTORY,this.state.userHeader).then((res)=>{
 	    	let factoryCount = res.length
 	    	this.setState({ factoryCount })
 	    })
-	    await GET(STORE).then((res)=>{
+	    await GET(STORE,this.state.userHeader).then((res)=>{
 	    	let storeCount = res.length
 	    	this.setState({ storeCount })
 	    })
@@ -90,8 +105,8 @@ class DeployFarm extends Component {
 		this.state.list.map((v) =>{ if(v.id===this.state.token)actor= v; return true;})
 		let _draff = DRAFF+this.state.token
 		this.state.dalatMilk.methods.updateProfile(actor.id,actor.name,'actor address location',2,actor.secret).send({from:this.state.account}).once('receipt',(rec)=>{
-			POST(FARM,{id:actor.id}).then(()=>{
-				DEL(_draff).then(()=>{
+			POST(FARM,{id:actor.id},this.state.userHeader).then(()=>{
+				DEL(_draff,this.state.loggedHeader).then(()=>{
 					swal('Active finish','Thanks!','success').then(()=>{window.location.reload()})
 				})
 			})
@@ -170,4 +185,4 @@ class DeployFarm extends Component {
   	}
 }
 
-export default DeployFarm;
+export default withCookies(DeployFarm);

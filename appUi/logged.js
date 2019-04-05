@@ -1,15 +1,4 @@
-module.exports = function() {
-  return {
-    store: require('./src/app/sys/invoice.json')
-  }
-}
-
-const Web3 = require('web3');
-const web3 = new Web3(Web3.givenProvider || "http://localhost:7545")
-let appKey      = '0xeBEA84Bf2E6d0f998D280974e543081dBD59FCc2';
-web3.eth.getCoinbase((eror,account)=>{
-	appKey = account
-})
+const appKey      = '0xeBEA84Bf2E6d0f998D280974e543081dBD59FCc2';
 const SECRET_KEY  = 'milkApp';
 const expiresIn   = '5h';
 
@@ -19,7 +8,7 @@ const jsonServer = require('json-server')
 const jwt = require('jsonwebtoken')
 
 const server = jsonServer.create()
-const router = jsonServer.router('./src/app/sys/invoice.json')
+const router = jsonServer.router('./src/app/sys/logged.json')
 const middlewares = jsonServer.defaults({ watch : true })
 
 server.use(middlewares)
@@ -59,6 +48,6 @@ server.use(/^(?!\/authenticate).*$/,  (req, res, next) => {
 
 server.use(router)
 
-server.listen(7002, () => {
-  console.log('Invoice Service listen: 7002')
+server.listen(3001, () => {
+  console.log('Logged Service listen: 3001')
 })

@@ -12,7 +12,7 @@ class FarmMenu extends Component {
 	    const { cookies } = props;
 	    if(parseInt(cookies.get('actor'))!==2)window.location.href='/'; 
 	    this.state = {
-	       paths: ['/farm/invoice','/farm/milk','/farm/history']
+	       paths: ['/farm/invoice','/farm/category','/farm/milk','/farm/history']
 	    }
   	}
 

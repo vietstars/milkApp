@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
 import Farmbg from '../img/Farm-processing.jpg';
 import Web3 from 'web3';
-import { LOGGED,GET } from '../sys/AppResource';
+import { instanceOf } from 'prop-types';
+import { withCookies, Cookies } from 'react-cookie';
+import { LOGGED,GET,HEADERS } from '../sys/AppResource';
 import FarmNotification from './FarmNotification';
-import { MDBDataTable, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from 'mdbreact';
+import swal from 'sweetalert';
+import { MDBDataTable, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter, MDBInput } from 'mdbreact';
 
 class FarmCategory extends Component {
+
+	static propTypes = {
+	    cookies: instanceOf(Cookies).isRequired
+  	};
 
 	componentWillMount(){
 		this.loadBlockchainData()
@@ -13,8 +20,13 @@ class FarmCategory extends Component {
 
 	constructor(props){
 	    super(props)
+	    const { cookies } = props;
+	    let token = cookies.get('logged')
+	    let authorization = 'milkApp '+token
+	    let loggedHeader = {...HEADERS,authorization}
 	    this.state = {
-	      	modal:false
+	      	modal:false,
+			loggedHeader:loggedHeader
 	    }
   	}
 
@@ -24,7 +36,7 @@ class FarmCategory extends Component {
 	    await web3.eth.getCoinbase((eror,account)=>{
 	    	this.setState({ account })
 	    })
-	    await GET(LOGGED).then((visited)=>{
+	    await GET(LOGGED,this.state.loggedHeader).then((visited)=>{
 	    	visited.map((v)=>{v.time = new Date((v.exp/1e3)-7200).toLocaleString(); delete v.exp; return true;});
 	    	this.setState({ visited })
 	    })
@@ -34,6 +46,23 @@ class FarmCategory extends Component {
 	  	this.setState({
 	    	modal: !this.state.modal
 	  	});
+	}
+
+  	addMilkInfo(e){
+  		e.preventDefault()
+  		const prName = this.refs.productName.state.innerValue;
+  		const cowsKind = this.refs.cowsKind.state.innerValue;
+  		const quantity = this.refs.quantity.state.innerValue;
+  		const description = this.refs.desrciption.state.innerValue;
+  		if(prName === '')
+  			swal('Please enter your product name','Thanks!','error')
+  		else if(cowsKind === '')
+  			swal('Please enter kind of cows','Thanks!','error')
+  			else if(quantity ==='')
+  				swal('Please enter your quantity per day','Thanks!','error')
+  				else if(description ==='')
+  					swal('Please enter your descriptions','Thanks!','error')
+	  	swal('Add product info finish','Thanks!','success')
 	}
 
   	render() {
@@ -74,7 +103,7 @@ class FarmCategory extends Component {
 						    <div className="card">
 						      	<div className="card-header">
 						      		Category
-						      		<span className="float-right mr-2"><a href="#!" onClick={this.toggle.bind(this,2)} className="text-success"><i className="fa fa-plus fa-2x" aria-hidden="true"></i></a></span>
+						      		<span className="float-right mr-2 text-success" style={{cursor:'pointer'}} onClick={this.toggle.bind(this,2)}><i className="fa fa-plus fa-2x" aria-hidden="true"></i></span>
 						      	</div>
 						      	<div className="card-body customer-style">
 							      <img src={Farmbg} className="img-fluid" alt="" />
@@ -86,17 +115,25 @@ class FarmCategory extends Component {
 					</div>
 				</div>
 				<MDBModal isOpen={ this.state.modal } toggle={this.toggle.bind(this,2)} >
-			        <MDBModalHeader toggle={this.toggle.bind(this,2)} >New Milk infomation</MDBModalHeader>
+				  <form onSubmit={this.addMilkInfo.bind(this)}>
+			        <MDBModalHeader toggle={this.toggle.bind(this,2)} >Category infomation <small> <small><br />Your category which you show your products to factory.</small></small></MDBModalHeader>
 			        <MDBModalBody>
-			        	Milk info	        	 	
+			        	<MDBInput label="Milk name" ref="productName" outline className="black-text" /> 
+			        	<small className="red-text">Your infomation inmutable on blockchain(then you will cost fee for save it)</small>
+			        	<MDBInput label="Kind of cows" ref="cowsKind"  outline className="black-text" /> 
+			        	<small className="red-text">Your infomation inmutable on blockchain</small>
+			        	<MDBInput label="Quantity per day" ref="quantity" type="number" placeholder="0" outline className="black-text" />    
+			        	<MDBInput type="textarea" ref="desrciption" label="Description" outline className="black-text" />  	 	
 			        </MDBModalBody>
 			        <MDBModalFooter>
 			          <MDBBtn color="secondary" onClick={this.toggle.bind(this,2)}>Close</MDBBtn>
+			          <MDBBtn color="primary" type="submit">Submit</MDBBtn>
 			        </MDBModalFooter>
+			      </form>
 		      	</MDBModal>
 		    </main>
 	    );
   	}
 }
 
-export default FarmCategory;
+export default withCookies(FarmCategory);

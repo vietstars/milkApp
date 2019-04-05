@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import Farmbg from '../img/Farm-processing.jpg';
 import Web3 from 'web3';
-import { LOGGED,GET } from '../sys/AppResource';
+import { instanceOf } from 'prop-types';
+import { withCookies, Cookies } from 'react-cookie';
+import { LOGGED,GET,HEADERS } from '../sys/AppResource';
 import FarmNotification from './FarmNotification';
 import { MDBDataTable } from 'mdbreact';
 
 class FarmDashboard extends Component {
+
+	static propTypes = {
+	    cookies: instanceOf(Cookies).isRequired
+  	};
 
 	componentWillMount(){
 		this.loadBlockchainData()
@@ -13,11 +19,16 @@ class FarmDashboard extends Component {
 
 	constructor(props){
 	    super(props)
+	    const { cookies } = props;
+	    let token = cookies.get('logged')
+	    let authorization = 'milkApp '+token
+	    let loggedHeader = {...HEADERS,authorization}
 	    this.state = {
 	      	visited: 0,
 	      	farm: [],
 	      	factory: [],
-	      	store: []
+	      	store: [],
+			loggedHeader:loggedHeader
 	    }
   	}
 
@@ -27,7 +38,7 @@ class FarmDashboard extends Component {
 	    await web3.eth.getCoinbase((eror,account)=>{
 	    	this.setState({ account })
 	    })
-	    await GET(LOGGED).then((visited)=>{
+	    await GET(LOGGED,this.state.loggedHeader).then((visited)=>{
 	    	visited.map((v)=>{v.time = new Date((v.exp/1e3)-7200).toLocaleString(); delete v.exp; return true;});
 	    	this.setState({ visited })
 	    })
@@ -84,4 +95,4 @@ class FarmDashboard extends Component {
   	}
 }
 
-export default FarmDashboard;
+export default withCookies(FarmDashboard);

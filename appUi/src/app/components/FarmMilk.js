@@ -74,7 +74,7 @@ class FarmMilk extends Component {
 						    <div className="card">
 						      	<div className="card-header">
 						      		Milk list
-						      		<span className="float-right mr-2"><a href="#!" onClick={this.toggle.bind(this,2)} className="text-success"><i className="fa fa-plus fa-2x" aria-hidden="true"></i></a></span>
+						      		<span className="float-right mr-2 text-success" onClick={this.toggle.bind(this,2)}><i className="fa fa-plus fa-2x" aria-hidden="true"></i></span>
 						      	</div>
 						      	<div className="card-body customer-style">
 							      <img src={Farmbg} className="img-fluid" alt="" />

@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import Deploybg from '../img/Deploy-processing.jpg';
+import { instanceOf } from 'prop-types';
+import { withCookies, Cookies } from 'react-cookie';
 import Web3 from 'web3';
-import { LOGGED,DRAFF,FARM,FACTORY,STORE,GET } from '../sys/AppResource';
+import { LOGGED,DRAFF,FARM,FACTORY,STORE,GET,HEADERS } from '../sys/AppResource';
 import DeployNotification from './DeployNotification';
 import { MDBDataTable } from 'mdbreact';
 
 class DeployDashboard extends Component {
+
+	static propTypes = {
+	    cookies: instanceOf(Cookies).isRequired
+  	};
 
 	componentWillMount(){
 		this.loadBlockchainData()
@@ -13,6 +19,13 @@ class DeployDashboard extends Component {
 
 	constructor(props){
 	    super(props)
+	    const { cookies } = props;
+	    let token = cookies.get('logged')
+	    let userToken = cookies.get('userToken')
+	    let authorization = 'milkApp '+token
+	    let loggedHeader = {...HEADERS,authorization}
+	    authorization = 'milkApp '+userToken
+	    let userHeader = {...HEADERS,authorization}
 	    this.state = {
 	      	visited: 0,
 	      	farm: [],
@@ -20,7 +33,9 @@ class DeployDashboard extends Component {
 	      	store: [],
 	      	farmCount: 0,
 			factoryCount: 0,
-			storeCount: 0
+			storeCount: 0,
+			loggedHeader:loggedHeader,
+			userHeader:userHeader
 	    }
   	}
 
@@ -30,26 +45,26 @@ class DeployDashboard extends Component {
 	    await web3.eth.getCoinbase((eror,account)=>{
 	    	this.setState({ account })
 	    })
-	    await GET(LOGGED).then((visited)=>{
+	    await GET(LOGGED, this.state.loggedHeader).then((visited)=>{
 	    	visited.map((v)=>{return v.exp = new Date((v.exp/1e3)-7200).toLocaleString()});
 	    	this.setState({ visited })
 	    })
-	    await GET(DRAFF).then((res)=>{
+	    await GET(DRAFF, this.state.loggedHeader).then((res)=>{
 	    	let farm = [];
 	    	let factory = [];
 	    	let store = [];
 	    	res.map((e)=>{e.apartment===2?farm.push(e):(e.apartment===3?factory.push(e):store.push(e));return true})
 	    	this.setState({ farm, factory, store });
 	    })
-	    await GET(FARM).then((res)=>{
+	    await GET(FARM,this.state.userHeader).then((res)=>{
 	    	let farmCount = res.length
 	    	this.setState({ farmCount })
 	    })
-	    await GET(FACTORY).then((res)=>{
+	    await GET(FACTORY,this.state.userHeader).then((res)=>{
 	    	let factoryCount = res.length
 	    	this.setState({ factoryCount })
 	    })
-	    await GET(STORE).then((res)=>{
+	    await GET(STORE,this.state.userHeader).then((res)=>{
 	    	let storeCount = res.length
 	    	this.setState({ storeCount })
 	    })
@@ -106,4 +121,4 @@ class DeployDashboard extends Component {
   	}
 }
 
-export default DeployDashboard;
+export default withCookies(DeployDashboard);
