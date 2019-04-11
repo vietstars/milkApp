@@ -4,8 +4,8 @@ export const FARM ='http://localhost:4001/farm/';
 export const FACTORY ='http://localhost:5001/factory/';
 export const STORE ='http://localhost:6001/store/';
 export const INVOICE ='http://localhost:7001/invoice/';
-export const HOUREXP = (Date.now()*1e3) + 3600;
-export const HOURSEXP = (Date.now()*1e3) + 7200;
+export const HOUREXP = parseInt(Date.now()/1e3) + 36*1e2;
+export const HOURSEXP = parseInt(Date.now()/1e3) + 72*1e2;
 export const SECRET_KEY = 'milkApp';
 export const expiresIn = '5h';
 

@@ -1,4 +1,4 @@
-const appKey      = '0xeBEA84Bf2E6d0f998D280974e543081dBD59FCc2';
+const appKey      = '0x16B21177f9fD4cF194f52E2AC923c4Ae0de732Ac';
 const SECRET_KEY  = 'milkApp';
 const expiresIn   = '5h';
 
@@ -21,7 +21,8 @@ function createToken(payload){
 }
 
 function lowSecure(token){
-  return  jwt.verify(token, SECRET_KEY, (err, decode) => decode !== undefined && decode.appKey === appKey ? decode : err)
+  const res = jwt.verify(token, SECRET_KEY, (err, decode) => decode !== undefined ? decode : err)
+  return res;
 }
 
 server.post('/authenticate', (req, res) => {
@@ -37,8 +38,14 @@ server.use(/^(?!\/authenticate).*$/,  (req, res, next) => {
     return
   }
   try {
-     lowSecure(req.headers.authorization.split(' ')[1])
-     next()
+    const auth = lowSecure(req.headers.authorization.split(' ')[1])
+    if( auth.appKey === appKey){
+      next()
+    } else {
+      const status = 401
+      const message = 'TokenExpiredError'
+      res.status(status).json({status, message})
+    }
   } catch (err) {
     const status = 401
     const message = 'Error access_token is revoked'

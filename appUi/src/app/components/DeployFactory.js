@@ -103,8 +103,8 @@ class DeployFactory extends Component {
 		this.state.list.map((v) =>{ if(v.id===this.state.token)actor= v; return true;})
 		let _draff = DRAFF+this.state.token
 		this.state.dalatMilk.methods.updateProfile(actor.id,actor.name,'actor address location',3,actor.secret).send({from:this.state.account}).once('receipt',(rec)=>{
-			POST(FACTORY,{id:actor.id}).then(()=>{
-				DEL(_draff).then(()=>{
+			POST(FACTORY,{id:actor.id},this.state.userHeader).then(()=>{
+				DEL(_draff,this.state.loggedHeader).then(()=>{
 					swal('Active finish','Thanks!','success').then(()=>{window.location.reload()})
 				})
 			})

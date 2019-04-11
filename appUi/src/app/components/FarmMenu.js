@@ -10,9 +10,9 @@ class FarmMenu extends Component {
 	constructor(props){
 	    super(props)
 	    const { cookies } = props;
-	    if(parseInt(cookies.get('actor'))!==2)window.location.href='/'; 
+	    if( parseInt(cookies.get('actor'))!==2 || cookies.get('isLogged')!=='true' )window.location.href='/'; 
 	    this.state = {
-	       paths: ['/farm/invoice','/farm/category','/farm/milk','/farm/history']
+	       paths: ['/farm/category','/farm/invoice','/farm/milk','/farm/history']
 	    }
   	}
 
@@ -26,10 +26,10 @@ class FarmMenu extends Component {
 		        <div className="list-group list-group-flush">
 		          	<a href="/farm" className={this.state.paths.indexOf(pathname)===-1?"list-group-item list-group-item-action waves-effect active":"list-group-item list-group-item-action waves-effect"}>
 			            <i className="fas fa-chart-pie mr-3"></i>Dashboard</a>
-		          	<a href="/farm/invoice" className={pathname === '/farm/invoice'?"list-group-item list-group-item-action waves-effect active":"list-group-item list-group-item-action waves-effect"}>
-			            <i className="fas fa-file-invoice-dollar mr-3"></i>Invoice management</a>
 		          	<a href="/farm/category" className={pathname === '/farm/category'?"list-group-item list-group-item-action waves-effect active":"list-group-item list-group-item-action waves-effect"}>
 			            <i className="fas fa-file-invoice-dollar mr-3"></i>Category management</a>
+		          	<a href="/farm/invoice" className={pathname === '/farm/invoice'?"list-group-item list-group-item-action waves-effect active":"list-group-item list-group-item-action waves-effect"}>
+			            <i className="fas fa-file-invoice-dollar mr-3"></i>Invoice management</a>
 		          	<a href="/farm/milk" className={pathname === '/farm/milk'?"list-group-item list-group-item-action waves-effect active":"list-group-item list-group-item-action waves-effect"}>
 			            <i className="fas fa-file-invoice-dollar mr-3"></i>Milk management</a>
 		          	<a href="/farm/history" className={pathname === '/farm/history'?"list-group-item list-group-item-action waves-effect active":"list-group-item list-group-item-action waves-effect"}>

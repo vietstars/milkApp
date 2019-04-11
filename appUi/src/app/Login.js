@@ -45,18 +45,18 @@ class Login extends Component {
   		const {cookies} = this.props;
   		let _key = this.refs.secret.state.innerValue;
   		let token = this.createToken({appKey:APP_LIST_ADDRESS})
-  		let userToken = this.createToken({appKey:this.state.account})
+  		let userToken = this.createToken({appKey:APP_LIST_ADDRESS})
   		let authorization = 'milkApp '+token
 		let loggedHeader = {...HEADERS,authorization}
   		if(parseInt(this.state.actor) === 1){
 	  		if(!this.state.isSecret){
 		  		this.state.dalatMilk.methods.updateSecret(_key).send({from:this.state.account}).once('receipt', (rec)=>{
 			      	this.setState({isSecret:true})
-			      	cookies.set('logged', token, { maxAge:18000,path: '/' });
-			      	cookies.set('userToken', userToken, { maxAge:18000,path: '/' });
+			      	cookies.set('logged', token, { maxAge:18*1e3,path: '/' });
+			      	cookies.set('userToken', userToken, { maxAge:18*1e3,path: '/' });
 					POST(LOGGED, {id: this.state.account,exp: HOUREXP}, loggedHeader)
 				        .then(()=>{
-				        	cookies.set('isLogged', true, { maxAge:3600, path: '/' });
+				        	cookies.set('isLogged', true, { maxAge:36*1e2, path: '/' });
 				        	swal('Sign In finish','Thanks!','success').then(()=>{
 				        		window.location.reload();
 				        	});
@@ -65,12 +65,12 @@ class Login extends Component {
 	  		}else{
 	  			this.state.dalatMilk.methods.checkSecret(_key).call({from:this.state.account}).then((isLogged)=>{
 	  				this.setState({isLogged});
-	  				cookies.set('logged', token, { maxAge:18000,path: '/' });
-			      	cookies.set('userToken', userToken, { maxAge:18000,path: '/' });
+	  				cookies.set('logged', token, { maxAge:18*1e3,path: '/' });
+			      	cookies.set('userToken', userToken, { maxAge:18*1e3,path: '/' });
 	  				if(isLogged){
 		  				POST(LOGGED, {id: this.state.account,exp: HOUREXP}, loggedHeader)
 				        .then(()=>{
-				        	cookies.set('isLogged', true, { maxAge:3600,path: '/' });
+				        	cookies.set('isLogged', true, { maxAge:36*1e2,path: '/' });
 				        	swal('Sign In finish','Thanks!','success').then(()=>{
 				        		window.location.reload();
 				        	});
@@ -89,12 +89,12 @@ class Login extends Component {
   		} else {
   			this.state.dalatMilk.methods.checkLogin(_key).call({from:this.state.account}).then((isLogged)=>{
   				this.setState({isLogged});  
-  				cookies.set('logged', token, { maxAge:18000,path: '/' });		
-		      	cookies.set('userToken', userToken, { maxAge:18000,path: '/' });		
+  				cookies.set('logged', token, { maxAge:18*1e3,path: '/' });		
+		      	cookies.set('userToken', userToken, { maxAge:18*1e3,path: '/' });		
   				if(isLogged){
 	  				POST(LOGGED, {id: this.state.account,exp: HOUREXP}, loggedHeader)
 			        .then(()=>{
-			        	cookies.set('isLogged', true, { maxAge:3600,path: '/' });
+			        	cookies.set('isLogged', true, { maxAge:36*1e3,path: '/' });
 			        	swal('Sign In finish','Thanks!','success').then(()=>{
 			        		window.location.reload();
 			        	});

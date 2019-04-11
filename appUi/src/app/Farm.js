@@ -4,9 +4,9 @@ import './css/deploy.css';
 import FarmMenu from './components/FarmMenu';
 import FarmFooter from './components/FarmFooter';
 import FarmDashboard from './components/FarmDashboard';
+import CategoryInvoice from './components/FarmCategory';
 import FarmInvoice from './components/FarmInvoice';
 import FarmMilk from './components/FarmMilk';
-import FarmCategory from './components/FarmCategory';
 import FarmLog from './components/FarmLog';
 import Logo from './img/Logo.jpg';
 
@@ -16,9 +16,9 @@ class Farm extends Component {
 	    	<BrowserRouter>
 			    <Route render={ (defaultProps) => <FarmMenu logo={Logo} {...defaultProps}/> } />
 			    <Switch>
+				    <Route path={"/farm/category"} component={ CategoryInvoice }/>
 				    <Route path={"/farm/invoice"} component={ FarmInvoice }/>
 				    <Route path={"/farm/milk"} component={ FarmMilk }/>
-				    <Route path={"/farm/category"} component={ FarmCategory }/>
 				    <Route path={"/farm/history"} component={ FarmLog }/>
 				    <Route component={ FarmDashboard }/>
 			    </Switch>

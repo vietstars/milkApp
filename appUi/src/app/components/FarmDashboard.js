@@ -39,7 +39,7 @@ class FarmDashboard extends Component {
 	    	this.setState({ account })
 	    })
 	    await GET(LOGGED,this.state.loggedHeader).then((visited)=>{
-	    	visited.map((v)=>{v.time = new Date((v.exp/1e3)-7200).toLocaleString(); delete v.exp; return true;});
+	    	visited.map((v)=>{return v.exp = new Date((v.exp+Math.log10(0.1)*36*1e2)*1e3).toLocaleString()});
 	    	this.setState({ visited })
 	    })
   	}
@@ -48,14 +48,14 @@ class FarmDashboard extends Component {
 	  	const visited = {
 	    	columns: [
 		      {
-		        label: 'Address',
-		        field: 'id',
-		        width: '70%'
-		      },
-		      {
 		        label: 'Visited at',
 		        field: 'exp',
-		        width: '30%'
+		        width: '10'
+		      },
+		      {
+		        label: 'Address',
+		        field: 'id',
+		        width: '80'
 		      }],
 		    rows: this.state.visited
 	  	}

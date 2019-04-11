@@ -11,7 +11,7 @@ class DeployMenu extends Component {
 	constructor(props){
 	    super(props)
 	    const { cookies } = props;
-	    if(parseInt(cookies.get('actor'))!==1)window.location.href='/';    
+	    if(parseInt(cookies.get('actor'))!==1 || cookies.get('isLogged') !== 'true')window.location.href='/';    
 	    this.state = {
 	       paths: ['/user/farm','/user/factory','/user/store'],
 	    }

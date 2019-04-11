@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { instanceOf } from 'prop-types';
 import { withCookies, Cookies } from 'react-cookie';
-import {MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavbarToggler, MDBCollapse, MDBIcon} from "mdbreact";
+import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavbarToggler, MDBCollapse, MDBIcon } from "mdbreact";
 import swal from 'sweetalert';
 import Web3 from 'web3';
-import {APP_LIST_ABI,APP_LIST_ADDRESS} from '../sys/DalatMilk';
-import {LOGGED,GET,PUT,DEL,HOUREXP,HEADERS} from '../sys/AppResource';
+import { APP_LIST_ABI,APP_LIST_ADDRESS } from '../sys/DalatMilk';
+import { LOGGED,GET,PUT,DEL,HOUREXP,HEADERS } from '../sys/AppResource';
 import Loading from './Loading';
 
-withRouter(props => <Navbar {...props} cookies={instanceOf(Cookies).isRequired}/>);
+withRouter(props => <Navbar {...props} cookies={ instanceOf(Cookies).isRequired }/>);
 
 class Navbar extends Component {
 
@@ -45,8 +45,12 @@ class Navbar extends Component {
 	    })
 	    /**********server side*************/
 	    await GET(LOGGED,this.state.loggedHeader).then((res)=>{
-	    	if(res.exp<(Date.now()/1e3))
-	    		DEL(LOGGED+this.state.account)
+	    	if(res.length>0){
+		    	res.forEach((o)=>{
+			    	if(o.exp<(Date.now()/1e3))
+			    		DEL(LOGGED+o.id,this.state.loggedHeader)
+		    	})
+	    	}
 	    })
 	    /**********************************/
 	    if(!this.state.account){
@@ -83,10 +87,10 @@ class Navbar extends Component {
 		    				if(res.exp!== undefined){
 						    	if(res.exp>(Date.now()/1e3)){
 							    	this.setState({loading: false})
-							    	cookies.set('isLogged', true, { maxAge:3600,path: '/' });
+							    	cookies.set('isLogged', true, { maxAge:36*1e2,path: '/' });
 							    	PUT(LOGGED+this.state.account, {exp:HOUREXP},this.state.loggedHeader)
 						    	}else{
-									cookies.set('isLogged', false, { maxAge:-3600,path: '/' });
+									cookies.set('isLogged', false, { maxAge:Math.log10(0.1)*36*1e2,path: '/' });
 						    		DEL(LOGGED+this.state.account)
 								    setTimeout(function(){
 										self.setState({ loading: false})
@@ -97,7 +101,7 @@ class Navbar extends Component {
 		    		}    		
 		    	}
 		    }else{
-				cookies.set('isLogged', false, { maxAge:-3600,path: '/' });
+				cookies.set('isLogged', false, { maxAge:Math.log10(0.1)*36*1e2,path: '/' });
 		    	if(pathname === '/login'){
 		    		window.location.href = '/'
 		    	}
@@ -124,9 +128,10 @@ class Navbar extends Component {
   	}
   	logout(){
 	    const { cookies } = this.props;
-		cookies.set('actor', false, { maxAge:-3600,path: '/' });
-		cookies.set('isLogged', false, { maxAge:-3600,path: '/' });
-		cookies.set('logged', false, { maxAge:-3600,path: '/' });
+		cookies.set('actor', false, { maxAge:Math.log10(0.1)*36*1e2,path: '/' });
+		cookies.set('isLogged', false, { maxAge:Math.log10(0.1)*36*1e2,path: '/' });
+		cookies.set('logged', false, { maxAge:Math.log10(0.1)*36*1e2,path: '/' });
+		cookies.set('userToken', false, {  maxAge:Math.log10(0.1)*36*1e2,path: '/' });
   		swal('Logout finish!','Thanks.','success').then(()=>{
 	  		DEL(LOGGED+this.state.account,this.state.loggedHeader).then((res)=>{
 	    		this.setState({isLogged:false})

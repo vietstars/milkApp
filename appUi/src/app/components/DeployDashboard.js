@@ -46,7 +46,7 @@ class DeployDashboard extends Component {
 	    	this.setState({ account })
 	    })
 	    await GET(LOGGED, this.state.loggedHeader).then((visited)=>{
-	    	visited.map((v)=>{return v.exp = new Date((v.exp/1e3)-7200).toLocaleString()});
+	    	visited.map((v)=>{return v.exp = new Date((v.exp+Math.log10(0.1)*36*1e2)*1e3).toLocaleString()});
 	    	this.setState({ visited })
 	    })
 	    await GET(DRAFF, this.state.loggedHeader).then((res)=>{

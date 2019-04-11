@@ -80,7 +80,6 @@ contract DalatMilk is Ownable {
         return _generatePass(_key) == profile[msg.sender].secret;
     }
     
-    
     function updateProfile(address userAdd,string memory name, string memory location, uint8 position, string memory secret) public {
         bytes16 _secret = _generatePass(secret);
         profile[userAdd]= Profile(name, location, _secret, position, uint32(now));
@@ -94,8 +93,7 @@ contract DalatMilk is Ownable {
         return _generatePass(_secret)==profile[msg.sender].secret;
     }
     
-    function _generatePass(string memory secret) private pure returns(bytes16) {
+    function _generatePass(string memory secret) internal pure returns(bytes16) {
         return bytes16(keccak256(abi.encodePacked(secret)));
     }
-    
 }
